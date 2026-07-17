@@ -1,0 +1,21 @@
+{
+  "short_name": "CyberJump",
+  "name": "CyberJump: Retro Arcade",
+  "icons": [
+    {
+      "src": "https://placehold.co/192x192/0b0c10/45f3ff?text=CJ",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://placehold.co/512x512/0b0c10/45f3ff?text=CyberJump",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#0b0c10",
+  "theme_color": "#0b0c10",
+  "display": "standalone",
+  "orientation": "portrait"
+}
