@@ -585,7 +585,30 @@
 
     // Initial Load
     updateStatsUI();
+    // Mobile Touch Controls
+const btnLeft = document.getElementById('btn-left');
+const btnRight = document.getElementById('btn-right');
+const btnJump = document.getElementById('btn-jump');
+
+function simulateKey(type, keyName) {
+  const event = new KeyboardEvent(type, { key: keyName });
+  window.dispatchEvent(event);
+}
+
+btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); simulateKey('keydown', 'ArrowLeft'); });
+btnLeft.addEventListener('touchend', (e) => { e.preventDefault(); simulateKey('keyup', 'ArrowLeft'); });
+
+btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); simulateKey('keydown', 'ArrowRight'); });
+btnRight.addEventListener('touchend', (e) => { e.preventDefault(); simulateKey('keyup', 'ArrowRight'); });
+
+btnJump.addEventListener('touchstart', (e) => { e.preventDefault(); simulateKey('keydown', 'ArrowUp'); });
+btnJump.addEventListener('touchend', (e) => { e.preventDefault(); simulateKey('keyup', 'ArrowUp'); });
 </script>
+<!-- Mobile Touch Controls -->
+<div id="mobile-controls">
+  <button id="btn-left">◀</button>
+  <button id="btn-jump">▲</button>
+  <button id="btn-right">▶</button>
 </body>
 </html>
  
