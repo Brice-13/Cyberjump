@@ -149,7 +149,7 @@
             display: none !important;
         }
 
-        /* Microtransaction Shop CSS */
+        /* Wardrobe Shop CSS */
         .shop-container {
             width: 90%;
             max-height: 250px;
@@ -184,7 +184,6 @@
             cursor: pointer;
         }
 
-        /* Small mini-canvas preview styling for shop rows */
         .shop-preview-canvas {
             background: #0b0c10;
             border: 1px solid #1f2833;
@@ -329,10 +328,11 @@
         vx: 0,
         vy: 0,
         speed: 6.0,
-        jumpForce: -13.5, // slightly more pop on the jumps
+        jumpForce: -13.5, 
         gravity: 0.48,
         color: '#45f3ff',
-        spriteId: 'default'
+        spriteId: 'default',
+        hasShield: false // Track shield protection state
     };
 
     let platforms = [];
@@ -340,9 +340,10 @@
     let cameraY = 0; 
     let basePlatformY = canvas.height - 40;
 
-    // Milestone logic tracking variables
+    // Milestone & Notification UI Tracking
     let nextMilestoneScore = 1000; 
     let milestoneAlertTimer = 0;
+    let shieldBreakAlertTimer = 0;
 
     // Controls tracking
     const keys = { left: false, right: false };
@@ -389,13 +390,26 @@
             
             platforms.push({ x, y, width, height: 12 });
 
-            // 35% chance to spawn a data chip
-            if (Math.random() < 0.35) {
+            let spawnRoll = Math.random();
+            // 8% chance to spawn a rare Deflector Shield Bubble item
+            if (spawnRoll < 0.08) {
+                items.push({
+                    x: x + width / 2 - 10,
+                    y: y - 28,
+                    width: 20,
+                    height: 20,
+                    type: 'shield',
+                    collected: false
+                });
+            } 
+            // 30% chance to spawn standard chip if shield didn't spawn
+            else if (spawnRoll < 0.38) {
                 items.push({
                     x: x + width / 2 - 7,
                     y: y - 25,
                     width: 14,
                     height: 14,
+                    type: 'chip',
                     collected: false
                 });
             }
@@ -430,15 +444,15 @@
         items = [];
         nextMilestoneScore = 1000;
         milestoneAlertTimer = 0;
+        shieldBreakAlertTimer = 0;
+        player.hasShield = false;
         
-        // Match player active skin configurations
         const activeObj = skins.find(s => s.id === selectedSkin);
         if (activeObj) {
             player.color = activeObj.color;
             player.spriteId = activeObj.spriteId;
         }
 
-        // Base Runway Line
         platforms.push({ x: 0, y: basePlatformY, width: canvas.width, height: 40 });
         generatePlatforms(canvas.height - 80, 20);
 
@@ -492,9 +506,9 @@
             updateStatsUI();
         }
 
-        if (milestoneAlertTimer > 0) {
-            milestoneAlertTimer--;
-        }
+        // Countdown notifications
+        if (milestoneAlertTimer > 0) milestoneAlertTimer--;
+        if (shieldBreakAlertTimer > 0) shieldBreakAlertTimer--;
 
         // Collision logic landing loops
         platforms.forEach(platform => {
@@ -510,7 +524,7 @@
             }
         });
 
-        // Item Collectible Collisions
+        // Item Power-Up & Collectible Collisions
         items.forEach(item => {
             if (!item.collected && 
                 player.x < item.x + item.width &&
@@ -519,9 +533,13 @@
                 player.y + player.height > item.y
             ) {
                 item.collected = true;
-                totalChips++;
-                localStorage.setItem('cyberjump_chips', totalChips);
-                updateStatsUI();
+                if (item.type === 'shield') {
+                    player.hasShield = true; // Equip shield protection!
+                } else {
+                    totalChips++;
+                    localStorage.setItem('cyberjump_chips', totalChips);
+                    updateStatsUI();
+                }
             }
         });
 
@@ -533,8 +551,17 @@
             generatePlatforms(highestPlatformY, 15);
         }
 
+        // Fall handling boundary engine check
         if (player.y > canvas.height) {
-            endGame();
+            if (player.hasShield) {
+                // SECOND CHANCE SAFETY NET ACTS NOW:
+                player.hasShield = false;
+                player.y = canvas.height / 2;
+                player.vy = player.jumpForce * 1.3; // Give a massive shield-break boost upward
+                shieldBreakAlertTimer = 120; // Flash the shatter notification
+            } else {
+                endGame();
+            }
         }
     }
 
@@ -550,20 +577,35 @@
             ctx.strokeRect(p.x, p.y, p.width, p.height);
         });
 
-        // Draw Data Chips
+        // Draw Collectible Orbs & Shields
         items.forEach(it => {
             if (!it.collected) {
-                ctx.fillStyle = '#ffe400';
-                ctx.shadowColor = '#ffe400';
-                ctx.shadowBlur = 8;
-                ctx.beginPath();
-                ctx.moveTo(it.x + it.width / 2, it.y);
-                ctx.lineTo(it.x + it.width, it.y + it.height / 2);
-                ctx.lineTo(it.x + it.width / 2, it.y + it.height);
-                ctx.lineTo(it.x, it.y + it.height / 2);
-                ctx.closePath();
-                ctx.fill();
-                ctx.shadowBlur = 0;
+                if (it.type === 'shield') {
+                    // Render Glowing Deflector Item Orb
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.fillStyle = '#45f3ff';
+                    ctx.shadowColor = '#45f3ff';
+                    ctx.shadowBlur = 12;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(it.x + 10, it.y + 10, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+                } else {
+                    // Standard Data Chip
+                    ctx.fillStyle = '#ffe400';
+                    ctx.shadowColor = '#ffe400';
+                    ctx.shadowBlur = 8;
+                    ctx.beginPath();
+                    ctx.moveTo(it.x + it.width / 2, it.y);
+                    ctx.lineTo(it.x + it.width, it.y + it.height / 2);
+                    ctx.lineTo(it.x + it.width / 2, it.y + it.height);
+                    ctx.lineTo(it.x, it.y + it.height / 2);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
             }
         });
 
@@ -571,27 +613,54 @@
         const matrix = jumperSprites[player.spriteId] || jumperSprites.default;
         drawPixelSprite(ctx, matrix, player.x, player.y, player.width, player.height, player.color);
 
-        // Render Milestone Alert overlay
+        // Render Active Deflector Bubble Field around character skin
+        if (player.hasShield) {
+            ctx.strokeStyle = '#45f3ff';
+            ctx.shadowColor = '#45f3ff';
+            ctx.shadowBlur = 10;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            // Wrap character neatly inside an orbital circle bubble layout
+            ctx.arc(player.x + player.width / 2, player.y + player.height / 2, 25, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+
+        // Render Hud Notifications Overlay Text
+        ctx.textAlign = 'center';
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = '#000000';
+
         if (milestoneAlertTimer > 0) {
             ctx.fillStyle = milestoneAlertTimer % 10 < 5 ? '#ff3b30' : '#45f3ff';
             ctx.font = 'bold 22px "Courier New"';
-            ctx.textAlign = 'center';
-            ctx.shadowColor = '#000000';
-            ctx.shadowBlur = 4;
             ctx.fillText("✨ MILESTONE CLEARED! ✨", canvas.width / 2, canvas.height / 3);
             ctx.font = '13px "Courier New"';
             ctx.fillStyle = '#ecf0f1';
             ctx.fillText("+100 DATA CHIPS SYNCHRONIZED", canvas.width / 2, (canvas.height / 3) + 30);
-            ctx.shadowBlur = 0;
         }
 
-        // Draw Real-Time HUD Score
+        if (shieldBreakAlertTimer > 0) {
+            ctx.fillStyle = '#ff3b30';
+            ctx.font = 'bold 20px "Courier New"';
+            ctx.fillText("💥 SHIELD SHATTERED! 💥", canvas.width / 2, canvas.height / 2.3);
+            ctx.font = '13px "Courier New"';
+            ctx.fillStyle = '#ecf0f1';
+            ctx.fillText("DEFLECTOR DISCHARGED - FALL PREVENTED", canvas.width / 2, (canvas.height / 2.3) + 26);
+        }
+        ctx.shadowBlur = 0;
+
+        // Draw Real-Time HUD Score stats panel
         ctx.fillStyle = '#ecf0f1';
         ctx.font = 'bold 16px "Courier New"';
         ctx.textAlign = 'left';
         ctx.fillText(`ALTITUDE: ${score}`, 15, 30);
         ctx.fillStyle = '#ffe400';
         ctx.fillText(`CHIPS: ${totalChips}`, 15, 55);
+        if (player.hasShield) {
+            ctx.fillStyle = '#45f3ff';
+            ctx.fillText(`🛡️ DEFLECTOR ACTIVE`, 15, 80);
+        }
     }
 
     function gameLoop() {
@@ -644,7 +713,6 @@
             `;
             listContainer.appendChild(row);
 
-            // Render mini avatar preview inside wardrobe
             const pCanvas = document.getElementById(`preview-${skin.id}`);
             const pCtx = pCanvas.getContext('2d');
             const targetMatrix = jumperSprites[skin.spriteId];
