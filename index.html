@@ -271,7 +271,6 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Make Canvas internal resolution independent of responsive size
     canvas.width = 400;
     canvas.height = 600;
 
@@ -283,12 +282,12 @@
     
     // Customization & Shop State
     let skins = [
-        { id: 'default', name: 'Standard Cyan', color: '#45f3ff', price: 0, owned: true },
-        { id: 'green', name: 'Matrix Green', color: '#39ff14', price: 50, owned: false },
-        { id: 'pink', name: 'Synthwave Pink', color: '#ff007f', price: 100, owned: false },
-        { id: 'gold', name: 'Premium Gold', color: '#ffd700', price: 250, owned: false }
+        { id: 'default', name: 'Alien UFO', character: '🛸', price: 0, owned: true },
+        { id: 'frog', name: 'Cyber Toad', character: '🐸', price: 50, owned: false },
+        { id: 'cat', name: 'Laser Nyan', character: '🐱', price: 100, owned: false },
+        { id: 'robot', name: 'Robo Unit', character: '🤖', price: 250, owned: false }
     ];
-    // Load owned skins from localStorage
+
     const savedSkins = JSON.parse(localStorage.getItem('cyberjump_skins'));
     if (savedSkins) {
         skins = savedSkins;
@@ -299,27 +298,29 @@
     const player = {
         x: canvas.width / 2 - 15,
         y: canvas.height - 100,
-        width: 26,
-        height: 26,
+        width: 32, // slightly wider to fit funny character assets nicely
+        height: 32,
         vx: 0,
         vy: 0,
         speed: 5.5,
         jumpForce: -13,
         gravity: 0.45,
-        color: '#45f3ff',
-        grounded: false
+        character: '🛸'
     };
 
     // Arrays to hold procedural assets
     let platforms = [];
     let items = [];
-    let cameraY = 0; // The scrolling coordinate
+    let cameraY = 0; 
     let basePlatformY = canvas.height - 40;
+
+    // Milestone logic tracking variables
+    let nextMilestoneScore = 1000; 
+    let milestoneAlertTimer = 0;
 
     // Controls tracking
     const keys = { left: false, right: false };
 
-    // Update UI Stats
     function updateStatsUI() {
         document.getElementById('high-score-val').textContent = highScore;
         document.getElementById('chips-total-val').textContent = totalChips;
@@ -337,7 +338,7 @@
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
     });
 
-    // Touch controls setup (Using dedicated left/right buttons)
+    // Touch controls setup 
     const btnLeft = document.getElementById('btn-left');
     const btnRight = document.getElementById('btn-right');
 
@@ -356,11 +357,15 @@
     function generatePlatforms(startY, count) {
         let y = startY;
         for (let i = 0; i < count; i++) {
-            y -= Math.floor(Math.random() * 50) + 75; // platform spacing
-            let width = Math.max(60, 110 - (score / 150)); // Platforms shrink slightly as score increases
+            y -= Math.floor(Math.random() * 50) + 75; 
+            let width = Math.max(60, 110 - (score / 150)); 
             let x = Math.random() * (canvas.width - width);
             
-            platforms.push({ x, y, width, height: 12 });
+            // Randomly tag a platform as a milestone platform if it crosses boundaries
+            let isMilestonePlatform = false;
+            let currentWorldHeightEstimation = Math.abs(y);
+            
+            platforms.push({ x, y, width, height: 12, isMilestone: false });
 
             // 35% chance to spawn a data chip collectible above platform
             if (Math.random() < 0.35) {
@@ -375,87 +380,89 @@
         }
     }
 
-    // Initialize Game state
     function initGame() {
         score = 0;
         cameraY = 0;
         platforms = [];
         items = [];
+        nextMilestoneScore = 1000;
+        milestoneAlertTimer = 0;
         
-        // Find active skin color
+        // Find active avatar asset choice
         const activeObj = skins.find(s => s.id === selectedSkin);
-        player.color = activeObj ? activeObj.color : '#45f3ff';
+        player.character = activeObj ? activeObj.character : '🛸';
 
         // Starting Ground Base
-        platforms.push({ x: 0, y: basePlatformY, width: canvas.width, height: 40 });
+        platforms.push({ x: 0, y: basePlatformY, width: canvas.width, height: 40, isMilestone: false });
 
         // Generate first pool of climbing platforms
         generatePlatforms(canvas.height - 80, 20);
 
-        // Reset player positions
-        player.x = canvas.width / 2 - 13;
+        player.x = canvas.width / 2 - 16;
         player.y = canvas.height - 120;
         player.vx = 0;
         player.vy = 0;
 
         gameActive = true;
-        
-        // Show touch controls on active game
         document.getElementById('mobile-controls').classList.remove('hide');
-        
         updateStatsUI();
         gameLoop();
     }
 
-    // Main Game Update Loop
     function update() {
         if (!gameActive) return;
 
-        // Apply Horizontal movement
         if (keys.left) {
             player.vx = -player.speed;
         } else if (keys.right) {
             player.vx = player.speed;
         } else {
-            player.vx *= 0.8; // Inertia deceleration
+            player.vx *= 0.8; 
         }
 
         player.x += player.vx;
-        
-        // Physics: Gravity application
         player.vy += player.gravity;
         player.y += player.vy;
 
-        // Wrap around screen edges
         if (player.x + player.width < 0) player.x = canvas.width;
         if (player.x > canvas.width) player.x = -player.width;
 
-        // Camera follow (Scroll screen upward when player climbs high)
+        // Camera loop scrolling calculations
         if (player.y < canvas.height / 2) {
             let diff = (canvas.height / 2) - player.y;
             cameraY += diff;
             player.y += diff;
             
-            // Move up world platforms & items offset
             platforms.forEach(p => p.y += diff);
             items.forEach(it => it.y += diff);
             
-            // Earn score relative to vertical height climbed
             score += Math.floor(diff);
         }
 
-        // Platform Collisions (Check landing coming down only)
+        // MILESTONE CHECKER CRITERIA
+        if (score >= nextMilestoneScore) {
+            nextMilestoneScore += 1000; // Setup next point target
+            totalChips += 100;         // Reward user with 100 crisp chips!
+            milestoneAlertTimer = 100; // Trigger HUD render timer frame counts
+            localStorage.setItem('cyberjump_chips', totalChips);
+            updateStatsUI();
+        }
+
+        if (milestoneAlertTimer > 0) {
+            milestoneAlertTimer--;
+        }
+
+        // Platform Landing Collisions Engine
         platforms.forEach(platform => {
             if (
-                player.vy > 0 && // falling down
+                player.vy > 0 && 
                 player.x + player.width > platform.x &&
                 player.x < platform.x + platform.width &&
                 player.y + player.height >= platform.y &&
                 player.y + player.height <= platform.y + 12
             ) {
-                // Land safely on platform
                 player.y = platform.y - player.height;
-                player.vy = player.jumpForce; // Bounce instantly upward (Arcade style!)
+                player.vy = player.jumpForce; 
             }
         });
 
@@ -474,25 +481,20 @@
             }
         });
 
-        // Dynamic Procedural Generation (Cleanup old objects & spawn new ones)
         platforms = platforms.filter(p => p.y < canvas.height + 50);
         items = items.filter(it => it.y < canvas.height + 50 && !it.collected);
 
         if (platforms.length < 15) {
-            // Find highest platform to spawn relative to
             let highestPlatformY = Math.min(...platforms.map(p => p.y));
             generatePlatforms(highestPlatformY, 15);
         }
 
-        // Game Over condition (Fell below screen)
         if (player.y > canvas.height) {
             endGame();
         }
     }
 
-    // Draw frame on canvas
     function draw() {
-        // Clear frame
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // Draw Platforms
@@ -504,7 +506,7 @@
             ctx.strokeRect(p.x, p.y, p.width, p.height);
         });
 
-        // Draw Data Chips (Glowing Diamonds)
+        // Draw Data Chips 
         items.forEach(it => {
             if (!it.collected) {
                 ctx.fillStyle = '#ffe400';
@@ -517,28 +519,40 @@
                 ctx.lineTo(it.x, it.y + it.height / 2);
                 ctx.closePath();
                 ctx.fill();
-                // Reset shadow mapping
                 ctx.shadowBlur = 0;
             }
         });
 
-        // Draw Player Character
-        ctx.fillStyle = player.color;
-        ctx.shadowColor = player.color;
-        ctx.shadowBlur = 12;
-        ctx.fillRect(player.x, player.y, player.width, player.height);
-        ctx.shadowBlur = 0;
+        // Draw Character Avatar (Handles Text Emojis smoothly inside engine positions)
+        ctx.font = `${player.height}px sans-serif`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText(player.character, player.x, player.y);
+
+        // Render Massive Milestone Alert overlay directly to game Canvas
+        if (milestoneAlertTimer > 0) {
+            ctx.fillStyle = milestoneAlertTimer % 10 < 5 ? '#ff4545' : '#45f3ff';
+            ctx.font = 'bold 24px "Courier New"';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = '#000000';
+            ctx.shadowBlur = 4;
+            ctx.fillText("⭐ MILESTONE CLEARED! ⭐", canvas.width / 2, canvas.height / 3);
+            ctx.font = '14px "Courier New"';
+            ctx.fillStyle = '#ecf0f1';
+            ctx.fillText("+100 SYSTEM CHIPS ALIGNED", canvas.width / 2, (canvas.height / 3) + 30);
+            ctx.shadowBlur = 0;
+        }
 
         // Draw Real-Time HUD Score
         ctx.fillStyle = '#ecf0f1';
         ctx.font = 'bold 16px "Courier New"';
         ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
         ctx.fillText(`SCORE: ${score}`, 15, 30);
         ctx.fillStyle = '#ffe400';
         ctx.fillText(`CHIPS: ${totalChips}`, 15, 55);
     }
 
-    // Engine loop driving animations
     function gameLoop() {
         if (!gameActive) return;
         update();
@@ -548,11 +562,8 @@
 
     function endGame() {
         gameActive = false;
-        
-        // Hide touch controls when game over
         document.getElementById('mobile-controls').classList.add('hide');
 
-        // Save Score
         if (score > highScore) {
             highScore = score;
             localStorage.setItem('cyberjump_highscore', highScore);
@@ -560,8 +571,6 @@
 
         document.getElementById('final-score-val').textContent = score;
         document.getElementById('collected-chips-val').textContent = totalChips;
-        
-        // Hide canvas view & show menu overlay
         document.getElementById('gameover-screen').classList.remove('hide');
     }
 
@@ -587,7 +596,7 @@
 
             row.innerHTML = `
                 <div style="display: flex; align-items: center;">
-                    <div style="width: 15px; height: 15px; background: ${skin.color}; margin-right: 10px; border-radius: 2px;"></div>
+                    <div style="font-size: 20px; margin-right: 10px;">${skin.character}</div>
                     <span>${skin.name}</span>
                 </div>
                 <div>${actionBtnHtml}</div>
@@ -645,8 +654,7 @@
         updateStatsUI();
     });
 
-    // Initial Load
     updateStatsUI();
 </script>
 </body>
-    </html>
+                                 </html>
