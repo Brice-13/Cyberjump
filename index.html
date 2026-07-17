@@ -149,25 +149,6 @@
             display: none !important;
         }
 
-        /* Mobile Touch Zone Indicators */
-        #touch-guides {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            display: flex;
-            z-index: 1;
-            opacity: 0.05;
-        }
-
-        .touch-zone {
-            width: 50%;
-            height: 100%;
-            border: 1px dashed #ffffff;
-        }
-
         /* Microtransaction Shop CSS */
         .shop-container {
             width: 90%;
@@ -180,10 +161,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 12px;
+            padding: 10px 12px;
             background: #151b24;
             border: 1px solid #45f3ff33;
-            margin: 5px 0;
+            margin: 6px 0;
             border-radius: 4px;
             font-size: 0.85rem;
         }
@@ -202,59 +183,61 @@
             color: #45f3ff;
             cursor: pointer;
         }
+
+        /* Small mini-canvas preview styling for shop rows */
+        .shop-preview-canvas {
+            background: #0b0c10;
+            border: 1px solid #1f2833;
+            border-radius: 3px;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <!-- Touch assistance guides (hidden layout) -->
-    <div id="touch-guides">
-        <div class="touch-zone"></div>
-        <div class="touch-zone"></div>
-    </div>
-
     <!-- MAIN MENU -->
     <div id="menu-screen" class="overlay">
         <h1>CyberJump</h1>
-        <div class="subtitle">// Accessing mainframe...</div>
+        <div class="subtitle">// Hacking Orbit Mainframe...</div>
         
         <div class="stats-box">
             <div>HIGH SCORE: <span id="high-score-val">0</span></div>
             <div style="margin-top: 5px;">CHIPS BALANCE: <span id="chips-total-val" style="color:#66fcf1;">0</span></div>
         </div>
 
-        <button id="play-btn" class="menu-btn">START SIMULATION</button>
-        <button id="shop-btn-menu" class="menu-btn">NEON SKIN SHOP</button>
+        <button id="play-btn" class="menu-btn">LAUNCH STARFIGHTER</button>
+        <button id="shop-btn-menu" class="menu-btn">SHIP HANGAR</button>
     </div>
 
     <!-- SKIN SHOP -->
     <div id="shop-screen" class="overlay hide">
-        <h1>Skin Shop</h1>
-        <div class="subtitle">Spend Chips to customize your avatar</div>
+        <h1>Ship Hangar</h1>
+        <div class="subtitle">Exchange Chips for advanced hull matrices</div>
         
         <div style="margin-bottom: 10px; font-weight: bold;">
-            Chips: <span id="shop-chips-val" style="color:#66fcf1;">0</span>
+            Data Chips Available: <span id="shop-chips-val" style="color:#66fcf1;">0</span>
         </div>
 
         <div class="shop-container" id="shop-items-list">
             <!-- Items injected via JS -->
         </div>
 
-        <button id="close-shop-btn" class="menu-btn" style="border-color: #ff4545; color: #ff4545;">CLOSE</button>
+        <button id="close-shop-btn" class="menu-btn" style="border-color: #ff4545; color: #ff4545;">CLOSE HANGAR</button>
     </div>
 
     <!-- GAME OVER SCREEN -->
     <div id="gameover-screen" class="overlay hide">
-        <h1 style="color: #ff4545; text-shadow: 0 0 10px #ff4545;">SIMULATION FAILED</h1>
-        <div class="subtitle" id="fail-reason">System overflow detected.</div>
+        <h1 style="color: #ff4545; text-shadow: 0 0 10px #ff4545;">CRITICAL CRASH</h1>
+        <div class="subtitle" id="fail-reason">Starfighter hull destroyed in vacuum loop.</div>
         
         <div class="stats-box">
-            <div>SCORE: <span id="final-score-val">0</span></div>
-            <div>CHIPS COLLECTED: <span id="collected-chips-val" style="color:#66fcf1;">0</span></div>
+            <div>FLIGHT ALTITUDE: <span id="final-score-val">0</span></div>
+            <div>CHIPS SECURED: <span id="collected-chips-val" style="color:#66fcf1;">0</span></div>
         </div>
 
-        <button id="retry-btn" class="menu-btn">REBOOT SYSTEM</button>
-        <button id="exit-btn" class="menu-btn">EXIT MAIN MENU</button>
+        <button id="retry-btn" class="menu-btn">RESPAWN STRATOSPHERE</button>
+        <button id="exit-btn" class="menu-btn">RETURN TO SECTOR 0</button>
     </div>
 
     <!-- Canvas Game Port -->
@@ -280,12 +263,56 @@
     let totalChips = parseInt(localStorage.getItem('cyberjump_chips')) || 0;
     let highScore = parseInt(localStorage.getItem('cyberjump_highscore')) || 0;
     
-    // Customization & Shop State
+    // --- CUSTOM PIXEL ART MATRICES (8x8 retro grids) ---
+    // . = transparency, Primary color specified inside properties
+    const shipSprites = {
+        default: [
+            "..X..X..",
+            "..X..X..",
+            ".XXXXXX.",
+            "XXXXXXXX",
+            "XXXXXXXX",
+            "XX.XX.XX",
+            "X......X",
+            "........"
+        ],
+        green: [
+            "...XX...",
+            "..XXXX..",
+            ".XXXXXX.",
+            "XXXXXXXX",
+            "X.XXXX.X",
+            "XX.XX.XX",
+            "X......X",
+            "X.X..X.X"
+        ],
+        purple: [
+            "....X...",
+            "...XXX..",
+            ".XXXXXX.",
+            "XXXXXXXX",
+            "XXXXXXXX",
+            ".X.XX.X.",
+            "XX....XX",
+            "X......X"
+        ],
+        gold: [
+            "...XX...",
+            "..XXXX..",
+            "XXXXXXXX",
+            "XXXXXXXX",
+            "XX.XX.XX",
+            "XXXXXXXX",
+            ".XXXXXX.",
+            "X.X..X.X"
+        ]
+    };
+
     let skins = [
-        { id: 'default', name: 'Alien UFO', character: '🛸', price: 0, owned: true },
-        { id: 'frog', name: 'Cyber Toad', character: '🐸', price: 50, owned: false },
-        { id: 'cat', name: 'Laser Nyan', character: '🐱', price: 100, owned: false },
-        { id: 'robot', name: 'Robo Unit', character: '🤖', price: 250, owned: false }
+        { id: 'default', name: 'Cyber Phoenix', color: '#45f3ff', spriteId: 'default', price: 0, owned: true },
+        { id: 'green', name: 'Grid Runner', color: '#39ff14', spriteId: 'green', price: 50, owned: false },
+        { id: 'purple', name: 'Void Stalker', color: '#b026ff', spriteId: 'purple', price: 100, owned: false },
+        { id: 'gold', name: 'Sovereign Dreadnought', color: '#ffd700', spriteId: 'gold', price: 250, owned: false }
     ];
 
     const savedSkins = JSON.parse(localStorage.getItem('cyberjump_skins'));
@@ -296,19 +323,19 @@
 
     // Player Object
     const player = {
-        x: canvas.width / 2 - 15,
+        x: canvas.width / 2 - 16,
         y: canvas.height - 100,
-        width: 32, // slightly wider to fit funny character assets nicely
+        width: 32, 
         height: 32,
         vx: 0,
         vy: 0,
-        speed: 5.5,
+        speed: 5.8,
         jumpForce: -13,
         gravity: 0.45,
-        character: '🛸'
+        color: '#45f3ff',
+        spriteId: 'default'
     };
 
-    // Arrays to hold procedural assets
     let platforms = [];
     let items = [];
     let cameraY = 0; 
@@ -327,7 +354,7 @@
         document.getElementById('shop-chips-val').textContent = totalChips;
     }
 
-    // Keyboard controls listeners
+    // Controls listeners
     window.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
@@ -353,7 +380,7 @@
     btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); simulateKey('keydown', 'ArrowRight'); });
     btnRight.addEventListener('touchend', (e) => { e.preventDefault(); simulateKey('keyup', 'ArrowRight'); });
 
-    // Procedural Generation functions
+    // Procedural Vector Generation
     function generatePlatforms(startY, count) {
         let y = startY;
         for (let i = 0; i < count; i++) {
@@ -361,13 +388,9 @@
             let width = Math.max(60, 110 - (score / 150)); 
             let x = Math.random() * (canvas.width - width);
             
-            // Randomly tag a platform as a milestone platform if it crosses boundaries
-            let isMilestonePlatform = false;
-            let currentWorldHeightEstimation = Math.abs(y);
-            
-            platforms.push({ x, y, width, height: 12, isMilestone: false });
+            platforms.push({ x, y, width, height: 12 });
 
-            // 35% chance to spawn a data chip collectible above platform
+            // 35% chance to spawn a data chip
             if (Math.random() < 0.35) {
                 items.push({
                     x: x + width / 2 - 7,
@@ -380,6 +403,27 @@
         }
     }
 
+    // Engine Core Pixel Art Rasterizing Rule
+    function drawPixelShip(renderContext, spriteMatrix, targetX, targetY, shipWidth, shipHeight, primaryColor) {
+        const rows = spriteMatrix.length;
+        const cols = spriteMatrix[0].length;
+        const pixelW = shipWidth / cols;
+        const pixelH = shipHeight / rows;
+
+        renderContext.fillStyle = primaryColor;
+        renderContext.shadowColor = primaryColor;
+        renderContext.shadowBlur = 10;
+
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                if (spriteMatrix[r][c] === 'X') {
+                    renderContext.fillRect(targetX + (c * pixelW), targetY + (r * pixelH), pixelW + 0.5, pixelH + 0.5);
+                }
+            }
+        }
+        renderContext.shadowBlur = 0; // Clear bleed logic
+    }
+
     function initGame() {
         score = 0;
         cameraY = 0;
@@ -388,14 +432,15 @@
         nextMilestoneScore = 1000;
         milestoneAlertTimer = 0;
         
-        // Find active avatar asset choice
+        // Match player active ship configurations
         const activeObj = skins.find(s => s.id === selectedSkin);
-        player.character = activeObj ? activeObj.character : '🛸';
+        if (activeObj) {
+            player.color = activeObj.color;
+            player.spriteId = activeObj.spriteId;
+        }
 
-        // Starting Ground Base
-        platforms.push({ x: 0, y: basePlatformY, width: canvas.width, height: 40, isMilestone: false });
-
-        // Generate first pool of climbing platforms
+        // Base Runway Line
+        platforms.push({ x: 0, y: basePlatformY, width: canvas.width, height: 40 });
         generatePlatforms(canvas.height - 80, 20);
 
         player.x = canvas.width / 2 - 16;
@@ -427,7 +472,7 @@
         if (player.x + player.width < 0) player.x = canvas.width;
         if (player.x > canvas.width) player.x = -player.width;
 
-        // Camera loop scrolling calculations
+        // Camera loop climbing matrices
         if (player.y < canvas.height / 2) {
             let diff = (canvas.height / 2) - player.y;
             cameraY += diff;
@@ -439,11 +484,11 @@
             score += Math.floor(diff);
         }
 
-        // MILESTONE CHECKER CRITERIA
+        // Milestone point checker loops
         if (score >= nextMilestoneScore) {
-            nextMilestoneScore += 1000; // Setup next point target
-            totalChips += 100;         // Reward user with 100 crisp chips!
-            milestoneAlertTimer = 100; // Trigger HUD render timer frame counts
+            nextMilestoneScore += 1000; 
+            totalChips += 100;         
+            milestoneAlertTimer = 100; 
             localStorage.setItem('cyberjump_chips', totalChips);
             updateStatsUI();
         }
@@ -452,7 +497,7 @@
             milestoneAlertTimer--;
         }
 
-        // Platform Landing Collisions Engine
+        // Collision logic landing loops
         platforms.forEach(platform => {
             if (
                 player.vy > 0 && 
@@ -506,7 +551,7 @@
             ctx.strokeRect(p.x, p.y, p.width, p.height);
         });
 
-        // Draw Data Chips 
+        // Draw Data Chips
         items.forEach(it => {
             if (!it.collected) {
                 ctx.fillStyle = '#ffe400';
@@ -523,23 +568,21 @@
             }
         });
 
-        // Draw Character Avatar (Handles Text Emojis smoothly inside engine positions)
-        ctx.font = `${player.height}px sans-serif`;
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'top';
-        ctx.fillText(player.character, player.x, player.y);
+        // Draw Custom Pixel Art Hangar Ship Engine
+        const matrix = shipSprites[player.spriteId] || shipSprites.default;
+        drawPixelShip(ctx, matrix, player.x, player.y, player.width, player.height, player.color);
 
-        // Render Massive Milestone Alert overlay directly to game Canvas
+        // Render Milestone Alert overlay
         if (milestoneAlertTimer > 0) {
-            ctx.fillStyle = milestoneAlertTimer % 10 < 5 ? '#ff4545' : '#45f3ff';
-            ctx.font = 'bold 24px "Courier New"';
+            ctx.fillStyle = milestoneAlertTimer % 10 < 5 ? '#ff3b30' : '#45f3ff';
+            ctx.font = 'bold 22px "Courier New"';
             ctx.textAlign = 'center';
             ctx.shadowColor = '#000000';
             ctx.shadowBlur = 4;
-            ctx.fillText("⭐ MILESTONE CLEARED! ⭐", canvas.width / 2, canvas.height / 3);
-            ctx.font = '14px "Courier New"';
+            ctx.fillText("🚀 MILESTONE CLEARED! 🚀", canvas.width / 2, canvas.height / 3);
+            ctx.font = '13px "Courier New"';
             ctx.fillStyle = '#ecf0f1';
-            ctx.fillText("+100 SYSTEM CHIPS ALIGNED", canvas.width / 2, (canvas.height / 3) + 30);
+            ctx.fillText("+100 DATA CHIPS CAPTURED", canvas.width / 2, (canvas.height / 3) + 30);
             ctx.shadowBlur = 0;
         }
 
@@ -547,8 +590,7 @@
         ctx.fillStyle = '#ecf0f1';
         ctx.font = 'bold 16px "Courier New"';
         ctx.textAlign = 'left';
-        ctx.textBaseline = 'alphabetic';
-        ctx.fillText(`SCORE: ${score}`, 15, 30);
+        ctx.fillText(`ALTITUDE: ${score}`, 15, 30);
         ctx.fillStyle = '#ffe400';
         ctx.fillText(`CHIPS: ${totalChips}`, 15, 55);
     }
@@ -574,7 +616,7 @@
         document.getElementById('gameover-screen').classList.remove('hide');
     }
 
-    // --- RETAIL & SHOP LOGIC ---
+    // --- HANGAR & RETAIL LOGIC ---
     function populateShop() {
         const listContainer = document.getElementById('shop-items-list');
         listContainer.innerHTML = '';
@@ -586,22 +628,29 @@
             let actionBtnHtml = '';
             if (skin.owned) {
                 if (skin.id === selectedSkin) {
-                    actionBtnHtml = `<span style="color: #66fcf1; font-weight: bold;">SELECTED</span>`;
+                    actionBtnHtml = `<span style="color: #66fcf1; font-weight: bold;">ACTIVE</span>`;
                 } else {
-                    actionBtnHtml = `<button class="shop-btn" onclick="selectSkin('${skin.id}')">USE</button>`;
+                    actionBtnHtml = `<button class="shop-btn" onclick="selectSkin('${skin.id}')">DEPLOY</button>`;
                 }
             } else {
                 actionBtnHtml = `<button class="shop-btn" onclick="buySkin('${skin.id}')">BUY (${skin.price} C)</button>`;
             }
 
+            // Create row contents with a mini rendering canvas inside the UI row element
             row.innerHTML = `
                 <div style="display: flex; align-items: center;">
-                    <div style="font-size: 20px; margin-right: 10px;">${skin.character}</div>
+                    <canvas id="preview-${skin.id}" class="shop-preview-canvas" width="24" height="24"></canvas>
                     <span>${skin.name}</span>
                 </div>
                 <div>${actionBtnHtml}</div>
             `;
             listContainer.appendChild(row);
+
+            // Render mini ship inside hangar row item slot
+            const pCanvas = document.getElementById(`preview-${skin.id}`);
+            const pCtx = pCanvas.getContext('2d');
+            const targetMatrix = shipSprites[skin.spriteId];
+            drawPixelShip(pCtx, targetMatrix, 2, 2, 20, 20, skin.color);
         });
     }
 
@@ -614,7 +663,7 @@
             localStorage.setItem('cyberjump_skins', JSON.stringify(skins));
             selectSkin(id);
         } else {
-            alert("Insufficient digital assets (Data Chips). Complete more runs!");
+            alert("Insufficient Core Assets. Clear more high-altitude milestones!");
         }
     }
 
@@ -657,4 +706,4 @@
     updateStatsUI();
 </script>
 </body>
-                                 </html>
+    </html>
