@@ -199,21 +199,21 @@
     <!-- MAIN MENU -->
     <div id="menu-screen" class="overlay">
         <h1>CyberJump</h1>
-        <div class="subtitle">// Hacking Orbit Mainframe...</div>
+        <div class="subtitle">// Initializing Cybernetic Jumper...</div>
         
         <div class="stats-box">
             <div>HIGH SCORE: <span id="high-score-val">0</span></div>
             <div style="margin-top: 5px;">CHIPS BALANCE: <span id="chips-total-val" style="color:#66fcf1;">0</span></div>
         </div>
 
-        <button id="play-btn" class="menu-btn">LAUNCH STARFIGHTER</button>
-        <button id="shop-btn-menu" class="menu-btn">SHIP HANGAR</button>
+        <button id="play-btn" class="menu-btn">ENTER CYBERSPACE</button>
+        <button id="shop-btn-menu" class="menu-btn">CHARACTER WARDROBE</button>
     </div>
 
     <!-- SKIN SHOP -->
     <div id="shop-screen" class="overlay hide">
-        <h1>Ship Hangar</h1>
-        <div class="subtitle">Exchange Chips for advanced hull matrices</div>
+        <h1>Wardrobe</h1>
+        <div class="subtitle">Exchange Chips for modified digital avatars</div>
         
         <div style="margin-bottom: 10px; font-weight: bold;">
             Data Chips Available: <span id="shop-chips-val" style="color:#66fcf1;">0</span>
@@ -223,20 +223,20 @@
             <!-- Items injected via JS -->
         </div>
 
-        <button id="close-shop-btn" class="menu-btn" style="border-color: #ff4545; color: #ff4545;">CLOSE HANGAR</button>
+        <button id="close-shop-btn" class="menu-btn" style="border-color: #ff4545; color: #ff4545;">CLOSE WARDROBE</button>
     </div>
 
     <!-- GAME OVER SCREEN -->
     <div id="gameover-screen" class="overlay hide">
-        <h1 style="color: #ff4545; text-shadow: 0 0 10px #ff4545;">CRITICAL CRASH</h1>
-        <div class="subtitle" id="fail-reason">Starfighter hull destroyed in vacuum loop.</div>
+        <h1 style="color: #ff4545; text-shadow: 0 0 10px #ff4545;">DESYNCHRONIZED</h1>
+        <div class="subtitle" id="fail-reason">Jumper lost terminal connection.</div>
         
         <div class="stats-box">
-            <div>FLIGHT ALTITUDE: <span id="final-score-val">0</span></div>
+            <div>ALTITUDE REACHED: <span id="final-score-val">0</span></div>
             <div>CHIPS SECURED: <span id="collected-chips-val" style="color:#66fcf1;">0</span></div>
         </div>
 
-        <button id="retry-btn" class="menu-btn">RESPAWN STRATOSPHERE</button>
+        <button id="retry-btn" class="menu-btn">RESPAWN AVATAR</button>
         <button id="exit-btn" class="menu-btn">RETURN TO SECTOR 0</button>
     </div>
 
@@ -263,56 +263,55 @@
     let totalChips = parseInt(localStorage.getItem('cyberjump_chips')) || 0;
     let highScore = parseInt(localStorage.getItem('cyberjump_highscore')) || 0;
     
-    // --- CUSTOM PIXEL ART MATRICES (8x8 retro grids) ---
-    // . = transparency, Primary color specified inside properties
-    const shipSprites = {
+    // --- CUSTOM PIXEL ART MATRICES (8x8 retro characters) ---
+    const jumperSprites = {
         default: [
-            "..X..X..",
+            "...XX...",
+            "..XXXX..",
             "..X..X..",
             ".XXXXXX.",
-            "XXXXXXXX",
-            "XXXXXXXX",
             "XX.XX.XX",
-            "X......X",
-            "........"
+            "..XXXX..",
+            "..X..X..",
+            ".XX..XX."
         ],
         green: [
-            "...XX...",
             "..XXXX..",
             ".XXXXXX.",
+            ".X.XX.X.",
             "XXXXXXXX",
-            "X.XXXX.X",
-            "XX.XX.XX",
-            "X......X",
-            "X.X..X.X"
+            "XXXXXXXX",
+            ".XXXXXX.",
+            "..XXXX..",
+            ".XX..XX."
         ],
         purple: [
-            "....X...",
-            "...XXX..",
-            ".XXXXXX.",
-            "XXXXXXXX",
-            "XXXXXXXX",
-            ".X.XX.X.",
-            "XX....XX",
-            "X......X"
-        ],
-        gold: [
             "...XX...",
             "..XXXX..",
-            "XXXXXXXX",
-            "XXXXXXXX",
+            ".XXXXXX.",
             "XX.XX.XX",
             "XXXXXXXX",
+            "..XXXX..",
+            ".XX..XX.",
+            "XX....XX"
+        ],
+        gold: [
+            "..XXXX..",
             ".XXXXXX.",
-            "X.X..X.X"
+            "XXXXXXXX",
+            ".X.XX.X.",
+            "XXXXXXXX",
+            "..XXXX..",
+            "..XXXX..",
+            ".XXX.XXX."
         ]
     };
 
     let skins = [
-        { id: 'default', name: 'Cyber Phoenix', color: '#45f3ff', spriteId: 'default', price: 0, owned: true },
-        { id: 'green', name: 'Grid Runner', color: '#39ff14', spriteId: 'green', price: 50, owned: false },
-        { id: 'purple', name: 'Void Stalker', color: '#b026ff', spriteId: 'purple', price: 100, owned: false },
-        { id: 'gold', name: 'Sovereign Dreadnought', color: '#ffd700', spriteId: 'gold', price: 250, owned: false }
+        { id: 'default', name: 'Neon Runner', color: '#45f3ff', spriteId: 'default', price: 0, owned: true },
+        { id: 'green', name: 'Cyber Suit', color: '#39ff14', spriteId: 'green', price: 50, owned: false },
+        { id: 'purple', name: 'Void Astronaut', color: '#b026ff', spriteId: 'purple', price: 100, owned: false },
+        { id: 'gold', name: 'Golden Android', color: '#ffd700', spriteId: 'gold', price: 250, owned: false }
     ];
 
     const savedSkins = JSON.parse(localStorage.getItem('cyberjump_skins'));
@@ -323,15 +322,15 @@
 
     // Player Object
     const player = {
-        x: canvas.width / 2 - 16,
+        x: canvas.width / 2 - 14,
         y: canvas.height - 100,
-        width: 32, 
+        width: 28, 
         height: 32,
         vx: 0,
         vy: 0,
-        speed: 5.8,
-        jumpForce: -13,
-        gravity: 0.45,
+        speed: 6.0,
+        jumpForce: -13.5, // slightly more pop on the jumps
+        gravity: 0.48,
         color: '#45f3ff',
         spriteId: 'default'
     };
@@ -404,24 +403,24 @@
     }
 
     // Engine Core Pixel Art Rasterizing Rule
-    function drawPixelShip(renderContext, spriteMatrix, targetX, targetY, shipWidth, shipHeight, primaryColor) {
+    function drawPixelSprite(renderContext, spriteMatrix, targetX, targetY, spriteWidth, spriteHeight, primaryColor) {
         const rows = spriteMatrix.length;
         const cols = spriteMatrix[0].length;
-        const pixelW = shipWidth / cols;
-        const pixelH = shipHeight / rows;
+        const pixelW = spriteWidth / cols;
+        const pixelH = spriteHeight / rows;
 
         renderContext.fillStyle = primaryColor;
         renderContext.shadowColor = primaryColor;
-        renderContext.shadowBlur = 10;
+        renderContext.shadowBlur = 8;
 
         for (let r = 0; r < rows; r++) {
             for (let c = 0; c < cols; c++) {
                 if (spriteMatrix[r][c] === 'X') {
-                    renderContext.fillRect(targetX + (c * pixelW), targetY + (r * pixelH), pixelW + 0.5, pixelH + 0.5);
+                    renderContext.fillRect(targetX + (c * pixelW), targetY + (r * pixelH), pixelW + 0.3, pixelH + 0.3);
                 }
             }
         }
-        renderContext.shadowBlur = 0; // Clear bleed logic
+        renderContext.shadowBlur = 0; 
     }
 
     function initGame() {
@@ -432,7 +431,7 @@
         nextMilestoneScore = 1000;
         milestoneAlertTimer = 0;
         
-        // Match player active ship configurations
+        // Match player active skin configurations
         const activeObj = skins.find(s => s.id === selectedSkin);
         if (activeObj) {
             player.color = activeObj.color;
@@ -443,7 +442,7 @@
         platforms.push({ x: 0, y: basePlatformY, width: canvas.width, height: 40 });
         generatePlatforms(canvas.height - 80, 20);
 
-        player.x = canvas.width / 2 - 16;
+        player.x = canvas.width / 2 - 14;
         player.y = canvas.height - 120;
         player.vx = 0;
         player.vy = 0;
@@ -462,7 +461,7 @@
         } else if (keys.right) {
             player.vx = player.speed;
         } else {
-            player.vx *= 0.8; 
+            player.vx *= 0.78; 
         }
 
         player.x += player.vx;
@@ -568,9 +567,9 @@
             }
         });
 
-        // Draw Custom Pixel Art Hangar Ship Engine
-        const matrix = shipSprites[player.spriteId] || shipSprites.default;
-        drawPixelShip(ctx, matrix, player.x, player.y, player.width, player.height, player.color);
+        // Draw Custom Pixel Art Character
+        const matrix = jumperSprites[player.spriteId] || jumperSprites.default;
+        drawPixelSprite(ctx, matrix, player.x, player.y, player.width, player.height, player.color);
 
         // Render Milestone Alert overlay
         if (milestoneAlertTimer > 0) {
@@ -579,10 +578,10 @@
             ctx.textAlign = 'center';
             ctx.shadowColor = '#000000';
             ctx.shadowBlur = 4;
-            ctx.fillText("🚀 MILESTONE CLEARED! 🚀", canvas.width / 2, canvas.height / 3);
+            ctx.fillText("✨ MILESTONE CLEARED! ✨", canvas.width / 2, canvas.height / 3);
             ctx.font = '13px "Courier New"';
             ctx.fillStyle = '#ecf0f1';
-            ctx.fillText("+100 DATA CHIPS CAPTURED", canvas.width / 2, (canvas.height / 3) + 30);
+            ctx.fillText("+100 DATA CHIPS SYNCHRONIZED", canvas.width / 2, (canvas.height / 3) + 30);
             ctx.shadowBlur = 0;
         }
 
@@ -616,7 +615,7 @@
         document.getElementById('gameover-screen').classList.remove('hide');
     }
 
-    // --- HANGAR & RETAIL LOGIC ---
+    // --- WARDROBE SHOP LOGIC ---
     function populateShop() {
         const listContainer = document.getElementById('shop-items-list');
         listContainer.innerHTML = '';
@@ -630,13 +629,12 @@
                 if (skin.id === selectedSkin) {
                     actionBtnHtml = `<span style="color: #66fcf1; font-weight: bold;">ACTIVE</span>`;
                 } else {
-                    actionBtnHtml = `<button class="shop-btn" onclick="selectSkin('${skin.id}')">DEPLOY</button>`;
+                    actionBtnHtml = `<button class="shop-btn" onclick="selectSkin('${skin.id}')">EQUIP</button>`;
                 }
             } else {
                 actionBtnHtml = `<button class="shop-btn" onclick="buySkin('${skin.id}')">BUY (${skin.price} C)</button>`;
             }
 
-            // Create row contents with a mini rendering canvas inside the UI row element
             row.innerHTML = `
                 <div style="display: flex; align-items: center;">
                     <canvas id="preview-${skin.id}" class="shop-preview-canvas" width="24" height="24"></canvas>
@@ -646,11 +644,11 @@
             `;
             listContainer.appendChild(row);
 
-            // Render mini ship inside hangar row item slot
+            // Render mini avatar preview inside wardrobe
             const pCanvas = document.getElementById(`preview-${skin.id}`);
             const pCtx = pCanvas.getContext('2d');
-            const targetMatrix = shipSprites[skin.spriteId];
-            drawPixelShip(pCtx, targetMatrix, 2, 2, 20, 20, skin.color);
+            const targetMatrix = jumperSprites[skin.spriteId];
+            drawPixelSprite(pCtx, targetMatrix, 4, 2, 16, 20, skin.color);
         });
     }
 
@@ -663,7 +661,7 @@
             localStorage.setItem('cyberjump_skins', JSON.stringify(skins));
             selectSkin(id);
         } else {
-            alert("Insufficient Core Assets. Clear more high-altitude milestones!");
+            alert("Insufficient Core Assets. Reach higher altitudes!");
         }
     }
 
