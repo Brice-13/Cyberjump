@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CyberJump: Retro Arcade</title>
+    <title>CyberJump: Time Leap</title>
     <style>
         /* Base page resetting */
         html, body {
@@ -79,7 +79,6 @@
         canvas {
             width: 100%;
             flex-grow: 1;
-            background: radial-gradient(circle, #151b24 0%, #0b0c10 100%);
             display: block;
         }
 
@@ -198,15 +197,15 @@
     <!-- MAIN MENU -->
     <div id="menu-screen" class="overlay">
         <h1>CyberJump</h1>
-        <div class="subtitle">// Initializing Cybernetic Jumper...</div>
+        <div class="subtitle">// Timeline Jumper Interface Loaded...</div>
         
         <div class="stats-box">
             <div>HIGH SCORE: <span id="high-score-val">0</span></div>
             <div style="margin-top: 5px;">CHIPS BALANCE: <span id="chips-total-val" style="color:#66fcf1;">0</span></div>
         </div>
 
-        <button id="play-btn" class="menu-btn">ENTER CYBERSPACE</button>
-        <button id="shop-btn-menu" class="menu-btn">CHARACTER WARDROBE</button>
+        <button id="play-btn" class="menu-btn">ENTER TEMPORAL FIELD</button>
+        <button id="shop-btn-menu" class="menu-btn">AVATAR WARDROBE</button>
     </div>
 
     <!-- SKIN SHOP -->
@@ -332,13 +331,19 @@
         gravity: 0.48,
         color: '#45f3ff',
         spriteId: 'default',
-        hasShield: false // Track shield protection state
+        hasShield: false
     };
 
     let platforms = [];
     let items = [];
     let cameraY = 0; 
     let basePlatformY = canvas.height - 40;
+
+    // Temporal Era Variables
+    let currentEra = 1; // 1 = Atari, 2 = 16-Bit, 3 = Modern
+    let previousEra = 1;
+    let eraLeapTimer = 0; // Show leap transition animation
+    let stars = [];      // Parallax starfield for Era 2 & 3
 
     // Milestone & Notification UI Tracking
     let nextMilestoneScore = 1000; 
@@ -347,6 +352,19 @@
 
     // Controls tracking
     const keys = { left: false, right: false };
+
+    // Initialize decorative stars for high eras
+    function initStars() {
+        stars = [];
+        for (let i = 0; i < 40; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2 + 1,
+                speed: Math.random() * 0.5 + 0.2
+            });
+        }
+    }
 
     function updateStatsUI() {
         document.getElementById('high-score-val').textContent = highScore;
@@ -391,7 +409,6 @@
             platforms.push({ x, y, width, height: 12 });
 
             let spawnRoll = Math.random();
-            // 8% chance to spawn a rare Deflector Shield Bubble item
             if (spawnRoll < 0.08) {
                 items.push({
                     x: x + width / 2 - 10,
@@ -401,9 +418,7 @@
                     type: 'shield',
                     collected: false
                 });
-            } 
-            // 30% chance to spawn standard chip if shield didn't spawn
-            else if (spawnRoll < 0.38) {
+            } else if (spawnRoll < 0.38) {
                 items.push({
                     x: x + width / 2 - 7,
                     y: y - 25,
@@ -416,21 +431,46 @@
         }
     }
 
-    // Engine Core Pixel Art Rasterizing Rule
+    // Dynamic Time-Morphing Engine Rasterization Rule
     function drawPixelSprite(renderContext, spriteMatrix, targetX, targetY, spriteWidth, spriteHeight, primaryColor) {
         const rows = spriteMatrix.length;
         const cols = spriteMatrix[0].length;
         const pixelW = spriteWidth / cols;
         const pixelH = spriteHeight / rows;
 
+        // Apply visual fidelity parameters based on the active Temporal Era
+        if (currentEra === 3) {
+            renderContext.shadowColor = primaryColor;
+            renderContext.shadowBlur = 12; // Beautiful neon vector glow
+        } else if (currentEra === 2) {
+            renderContext.shadowColor = primaryColor;
+            renderContext.shadowBlur = 4;  // Soft CRT glow
+        } else {
+            renderContext.shadowBlur = 0;  // Raw flat, pixelated Atari graphics
+        }
+
         renderContext.fillStyle = primaryColor;
-        renderContext.shadowColor = primaryColor;
-        renderContext.shadowBlur = 8;
 
         for (let r = 0; r < rows; r++) {
             for (let c = 0; c < cols; c++) {
                 if (spriteMatrix[r][c] === 'X') {
-                    renderContext.fillRect(targetX + (c * pixelW), targetY + (r * pixelH), pixelW + 0.3, pixelH + 0.3);
+                    if (currentEra === 1) {
+                        // Chunky Atari style (Gap between subpixels)
+                        renderContext.fillRect(
+                            targetX + (c * pixelW), 
+                            targetY + (r * pixelH), 
+                            pixelW - 0.5, 
+                            pixelH - 0.5
+                        );
+                    } else {
+                        // Smooth, seamless continuous rendering
+                        renderContext.fillRect(
+                            targetX + (c * pixelW), 
+                            targetY + (r * pixelH), 
+                            pixelW + 0.3, 
+                            pixelH + 0.3
+                        );
+                    }
                 }
             }
         }
@@ -446,7 +486,12 @@
         milestoneAlertTimer = 0;
         shieldBreakAlertTimer = 0;
         player.hasShield = false;
+        currentEra = 1;
+        previousEra = 1;
+        eraLeapTimer = 0;
         
+        initStars();
+
         const activeObj = skins.find(s => s.id === selectedSkin);
         if (activeObj) {
             player.color = activeObj.color;
@@ -493,8 +538,33 @@
             
             platforms.forEach(p => p.y += diff);
             items.forEach(it => it.y += diff);
+
+            // Parallax scroll background stars during higher eras
+            if (currentEra >= 2) {
+                stars.forEach(s => {
+                    s.y += diff * s.speed;
+                    if (s.y > canvas.height) {
+                        s.y = 0;
+                        s.x = Math.random() * canvas.width;
+                    }
+                });
+            }
             
             score += Math.floor(diff);
+        }
+
+        // --- TEMPORAL TIMELINE LEAP DETECTOR ---
+        if (score < 1500) {
+            currentEra = 1;
+        } else if (score >= 1500 && score < 4000) {
+            currentEra = 2;
+        } else {
+            currentEra = 3;
+        }
+
+        if (currentEra !== previousEra) {
+            eraLeapTimer = 150; // Trigger awesome glitch/time leap overlay text
+            previousEra = currentEra;
         }
 
         // Milestone point checker loops
@@ -509,6 +579,7 @@
         // Countdown notifications
         if (milestoneAlertTimer > 0) milestoneAlertTimer--;
         if (shieldBreakAlertTimer > 0) shieldBreakAlertTimer--;
+        if (eraLeapTimer > 0) eraLeapTimer--;
 
         // Collision logic landing loops
         platforms.forEach(platform => {
@@ -517,7 +588,7 @@
                 player.x + player.width > platform.x &&
                 player.x < platform.x + platform.width &&
                 player.y + player.height >= platform.y &&
-                player.y + player.height <= platform.y + 12
+                player.y + platform.height <= platform.y + 12
             ) {
                 player.y = platform.y - player.height;
                 player.vy = player.jumpForce; 
@@ -534,7 +605,7 @@
             ) {
                 item.collected = true;
                 if (item.type === 'shield') {
-                    player.hasShield = true; // Equip shield protection!
+                    player.hasShield = true;
                 } else {
                     totalChips++;
                     localStorage.setItem('cyberjump_chips', totalChips);
@@ -554,11 +625,10 @@
         // Fall handling boundary engine check
         if (player.y > canvas.height) {
             if (player.hasShield) {
-                // SECOND CHANCE SAFETY NET ACTS NOW:
                 player.hasShield = false;
                 player.y = canvas.height / 2;
-                player.vy = player.jumpForce * 1.3; // Give a massive shield-break boost upward
-                shieldBreakAlertTimer = 120; // Flash the shatter notification
+                player.vy = player.jumpForce * 1.3; 
+                shieldBreakAlertTimer = 120; 
             } else {
                 endGame();
             }
@@ -568,70 +638,166 @@
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Draw Platforms
+        // --- ERA BASED DYNAMIC BACKGROUNDS ---
+        if (currentEra === 1) {
+            // Atari Era: Pure Flat Retro Black with Scanlines
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw CRT Horizontal Scanlines
+            ctx.fillStyle = 'rgba(0, 255, 100, 0.05)';
+            for (let i = 0; i < canvas.height; i += 4) {
+                ctx.fillRect(0, i, canvas.width, 1.5);
+            }
+        } 
+        else if (currentEra === 2) {
+            // 16-Bit Era: Scrolling Space Parallax
+            ctx.fillStyle = '#0b0c1b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw space dust/stars
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            stars.forEach(s => {
+                ctx.fillRect(s.x, s.y, s.size, s.size);
+            });
+        } 
+        else {
+            // Modern Era: Glowing Radial Gradient Synthwave Matrix
+            let gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 50, canvas.width/2, canvas.height/2, 400);
+            gradient.addColorStop(0, '#15102a');
+            gradient.addColorStop(1, '#05020c');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw dynamic star field
+            ctx.fillStyle = '#45f3ff';
+            stars.forEach(s => {
+                ctx.shadowColor = '#45f3ff';
+                ctx.shadowBlur = 4;
+                ctx.fillRect(s.x, s.y, s.size + 1, s.size + 1);
+            });
+            ctx.shadowBlur = 0;
+        }
+
+        // --- DRAW PLATFORMS BY ERA ---
         platforms.forEach(p => {
-            ctx.fillStyle = '#1f2833';
-            ctx.strokeStyle = '#66fcf1';
-            ctx.lineWidth = 2;
-            ctx.fillRect(p.x, p.y, p.width, p.height);
-            ctx.strokeRect(p.x, p.y, p.width, p.height);
+            if (currentEra === 1) {
+                // Atari: Blocky, flat, raw green line edges
+                ctx.fillStyle = '#00ff55';
+                ctx.fillRect(p.x, p.y, p.width, p.height);
+            } 
+            else if (currentEra === 2) {
+                // 16-Bit: Structured metallic-gray with details
+                ctx.fillStyle = '#3a506b';
+                ctx.strokeStyle = '#5bc0be';
+                ctx.lineWidth = 1.5;
+                ctx.fillRect(p.x, p.y, p.width, p.height);
+                ctx.strokeRect(p.x, p.y, p.width, p.height);
+                // Mini horizontal treadlines
+                ctx.fillStyle = '#1c2541';
+                ctx.fillRect(p.x + 5, p.y + 3, p.width - 10, 2);
+            } 
+            else {
+                // Modern: Intense neon cyan glow vectors
+                ctx.fillStyle = '#0d0e15';
+                ctx.strokeStyle = '#45f3ff';
+                ctx.shadowColor = '#45f3ff';
+                ctx.shadowBlur = 8;
+                ctx.lineWidth = 2.5;
+                ctx.fillRect(p.x, p.y, p.width, p.height);
+                ctx.strokeRect(p.x, p.y, p.width, p.height);
+                ctx.shadowBlur = 0;
+            }
         });
 
-        // Draw Collectible Orbs & Shields
+        // --- DRAW COLLECTIBLES BY ERA ---
         items.forEach(it => {
             if (!it.collected) {
                 if (it.type === 'shield') {
-                    // Render Glowing Deflector Item Orb
-                    ctx.strokeStyle = '#ffffff';
-                    ctx.fillStyle = '#45f3ff';
-                    ctx.shadowColor = '#45f3ff';
-                    ctx.shadowBlur = 12;
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.arc(it.x + 10, it.y + 10, 8, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.stroke();
-                    ctx.shadowBlur = 0;
+                    if (currentEra === 1) {
+                        // Atari: Solid pixel square shield
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(it.x, it.y, it.width, it.height);
+                    } else if (currentEra === 2) {
+                        // 16-Bit: Distinct sphere capsule
+                        ctx.fillStyle = '#45f3ff';
+                        ctx.beginPath();
+                        ctx.arc(it.x + 10, it.y + 10, 7, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else {
+                        // Modern: Glowing vector deflector core
+                        ctx.strokeStyle = '#ffffff';
+                        ctx.fillStyle = '#45f3ff';
+                        ctx.shadowColor = '#45f3ff';
+                        ctx.shadowBlur = 15;
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(it.x + 10, it.y + 10, 8, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        ctx.shadowBlur = 0;
+                    }
                 } else {
-                    // Standard Data Chip
-                    ctx.fillStyle = '#ffe400';
-                    ctx.shadowColor = '#ffe400';
-                    ctx.shadowBlur = 8;
-                    ctx.beginPath();
-                    ctx.moveTo(it.x + it.width / 2, it.y);
-                    ctx.lineTo(it.x + it.width, it.y + it.height / 2);
-                    ctx.lineTo(it.x + it.width / 2, it.y + it.height);
-                    ctx.lineTo(it.x, it.y + it.height / 2);
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
+                    // Data Chip items
+                    if (currentEra === 1) {
+                        ctx.fillStyle = '#ffe400';
+                        ctx.fillRect(it.x + 2, it.y + 2, 10, 10);
+                    } else if (currentEra === 2) {
+                        ctx.fillStyle = '#ffe400';
+                        ctx.beginPath();
+                        ctx.arc(it.x + 7, it.y + 7, 6, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else {
+                        ctx.fillStyle = '#ffe400';
+                        ctx.shadowColor = '#ffe400';
+                        ctx.shadowBlur = 8;
+                        ctx.beginPath();
+                        ctx.moveTo(it.x + it.width / 2, it.y);
+                        ctx.lineTo(it.x + it.width, it.y + it.height / 2);
+                        ctx.lineTo(it.x + it.width / 2, it.y + it.height);
+                        ctx.lineTo(it.x, it.y + it.height / 2);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
                 }
             }
         });
 
-        // Draw Custom Pixel Art Character
+        // --- DRAW CHARACTER ---
         const matrix = jumperSprites[player.spriteId] || jumperSprites.default;
         drawPixelSprite(ctx, matrix, player.x, player.y, player.width, player.height, player.color);
 
-        // Render Active Deflector Bubble Field around character skin
+        // --- DRAW ACTIVE DEFLECTOR SHIELD ---
         if (player.hasShield) {
             ctx.strokeStyle = '#45f3ff';
-            ctx.shadowColor = '#45f3ff';
-            ctx.shadowBlur = 10;
-            ctx.lineWidth = 3;
+            ctx.lineWidth = currentEra === 3 ? 3.5 : 2;
+            if (currentEra === 3) ctx.shadowBlur = 12;
             ctx.beginPath();
-            // Wrap character neatly inside an orbital circle bubble layout
             ctx.arc(player.x + player.width / 2, player.y + player.height / 2, 25, 0, Math.PI * 2);
             ctx.stroke();
             ctx.shadowBlur = 0;
         }
 
-        // Render Hud Notifications Overlay Text
+        // --- RENDERING HUD ALERTS ---
         ctx.textAlign = 'center';
-        ctx.shadowBlur = 4;
         ctx.shadowColor = '#000000';
+        ctx.shadowBlur = 6;
 
-        if (milestoneAlertTimer > 0) {
+        // 1. Time Leap Graphic Notification
+        if (eraLeapTimer > 0) {
+            ctx.fillStyle = '#ff0055';
+            ctx.font = 'bold 24px "Courier New"';
+            ctx.fillText("⚠️ TIMELINE LEAP DETECTED! ⚠️", canvas.width / 2, canvas.height / 2.5);
+            
+            ctx.fillStyle = '#66fcf1';
+            ctx.font = '14px "Courier New"';
+            let eraName = currentEra === 2 ? "16-BIT ARCADE ACTIVE" : "MODERN NEON VECTOR ACTIVE";
+            ctx.fillText(eraName, canvas.width / 2, (canvas.height / 2.5) + 26);
+        }
+
+        // 2. Standard Milestone Clear
+        if (milestoneAlertTimer > 0 && eraLeapTimer <= 0) {
             ctx.fillStyle = milestoneAlertTimer % 10 < 5 ? '#ff3b30' : '#45f3ff';
             ctx.font = 'bold 22px "Courier New"';
             ctx.fillText("✨ MILESTONE CLEARED! ✨", canvas.width / 2, canvas.height / 3);
@@ -640,27 +806,30 @@
             ctx.fillText("+100 DATA CHIPS SYNCHRONIZED", canvas.width / 2, (canvas.height / 3) + 30);
         }
 
+        // 3. Shield Shatter Deflector Clear
         if (shieldBreakAlertTimer > 0) {
             ctx.fillStyle = '#ff3b30';
             ctx.font = 'bold 20px "Courier New"';
-            ctx.fillText("💥 SHIELD SHATTERED! 💥", canvas.width / 2, canvas.height / 2.3);
+            ctx.fillText("💥 SHIELD SHATTERED! 💥", canvas.width / 2, canvas.height / 1.8);
             ctx.font = '13px "Courier New"';
             ctx.fillStyle = '#ecf0f1';
-            ctx.fillText("DEFLECTOR DISCHARGED - FALL PREVENTED", canvas.width / 2, (canvas.height / 2.3) + 26);
+            ctx.fillText("DEFLECTOR DISCHARGED - ALTITUDE PRESERVED", canvas.width / 2, (canvas.height / 1.8) + 26);
         }
         ctx.shadowBlur = 0;
 
-        // Draw Real-Time HUD Score stats panel
+        // --- DRAW TOP GRAPHICS HEADS-UP DISPLAY ---
         ctx.fillStyle = '#ecf0f1';
         ctx.font = 'bold 16px "Courier New"';
         ctx.textAlign = 'left';
         ctx.fillText(`ALTITUDE: ${score}`, 15, 30);
         ctx.fillStyle = '#ffe400';
         ctx.fillText(`CHIPS: ${totalChips}`, 15, 55);
-        if (player.hasShield) {
-            ctx.fillStyle = '#45f3ff';
-            ctx.fillText(`🛡️ DEFLECTOR ACTIVE`, 15, 80);
-        }
+
+        // Display Active Era Subtitle
+        ctx.textAlign = 'right';
+        ctx.fillStyle = currentEra === 1 ? '#00ff55' : currentEra === 2 ? '#5bc0be' : '#45f3ff';
+        let eraText = currentEra === 1 ? "ERA: 8-BIT" : currentEra === 2 ? "ERA: 16-BIT" : "ERA: VECTOR";
+        ctx.fillText(eraText, canvas.width - 15, 30);
     }
 
     function gameLoop() {
@@ -772,4 +941,4 @@
     updateStatsUI();
 </script>
 </body>
-    </html>
+        </html>
