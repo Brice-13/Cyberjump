@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CyberJump: Bulletproof Core</title>
+    <title>CyberJump: Controls Reconnected</title>
     <style>
         html, body {
             margin: 0;
@@ -288,12 +288,6 @@
     let highScore = parseInt(localStorage.getItem('cyberjump_highscore')) || 0;
     let runRebootsCount = 0;
 
-    // Premium Compensation Grant
-    if (totalChips < 1000) {
-        totalChips = 1000;
-        localStorage.setItem('cyberjump_chips', totalChips);
-    }
-
     let activeBoosters = { shield: false, magnet: false, jetpack: false };
 
     const atariMatrix = [
@@ -394,6 +388,7 @@
         document.getElementById('shop-chips-val').textContent = totalChips;
     }
 
+    // --- RECONNECTED MOBILE INPUTS ENGINE (Wired directly to state map flags) ---
     window.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
@@ -402,6 +397,14 @@
         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
     });
+
+    const btnLeft = document.getElementById('btn-left');
+    const btnRight = document.getElementById('btn-right');
+
+    btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); keys.left = true; });
+    btnLeft.addEventListener('touchend', (e) => { e.preventDefault(); keys.left = false; });
+    btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); keys.right = true; });
+    btnRight.addEventListener('touchend', (e) => { e.preventDefault(); keys.right = false; });
 
     function generatePlatforms(startY, count) {
         let y = startY;
@@ -419,7 +422,6 @@
 
             let roll = Math.random();
             if (score > 4000 && roll < 0.09) {
-                // --- LASER FIX: Scale laser to occupy max 45% of platform so dodging is always possible! ---
                 let laserWidth = width * 0.45;
                 let laserX = x + (Math.random() < 0.5 ? 0 : width - laserWidth);
                 items.push({ x: laserX, y: y - 5, width: laserWidth, height: 6, type: 'laser', collected: false });
@@ -621,7 +623,6 @@
             generatePlatforms(highestPlatformY, 15);
         }
 
-        // Natural bottom fall boundary tracking
         if (player.y > canvas.height + 15) {
             if (player.hasShield) {
                 player.hasShield = false;
@@ -799,7 +800,6 @@
         document.getElementById('save-screen').classList.remove('hide');
     }
 
-    // --- BULLETPROOF REBOOT RESET MATRIX PATCH ---
     document.getElementById('reboot-btn').addEventListener('click', () => {
         const cost = getRebootCost();
         if (totalChips >= cost) {
@@ -810,24 +810,19 @@
             document.getElementById('save-screen').classList.add('hide');
             document.getElementById('mobile-controls').classList.remove('hide');
             
-            // 1. COMPLETELY WIPE HARDWARE STATE VARIABLES TO PREVENT LOOP DEATH
             player.jetpackTimer = 0;
             player.vx = 0;
             
-            // 2. REGENERATE A GUARANTEED FLUID SAFETY LANDING platform TRACK DIRECTLY UNDERNEATH
             let safeY = canvas.height / 2 + 100;
             let safetyPlatform = { x: canvas.width / 2 - 60, y: safeY, width: 120, vx: 0 };
             
-            // Inject platform at index 0 and clear matching height items
             platforms.unshift(safetyPlatform);
             items = items.filter(it => Math.abs(it.y - safeY) > 40);
 
-            // 3. FORCE PLAYER SECURE COORDINATES SAFELY ABOVE THE INJECTED BAR
             player.x = canvas.width / 2 - player.width / 2;
-            player.y = safeY - player.height - 80; // Suspends player in clear headspace safely above track
-            player.vy = player.jumpForce * 1.15;   // Fire player upward with high speed force
+            player.y = safeY - player.height - 80; 
+            player.vy = player.jumpForce * 1.15;   
             
-            // 4. RESET STATE ACTIVE AFTER ALL TRANSITIONS CONCLUDE FLUIDLY
             setTimeout(() => {
                 gameActive = true;
                 updateStatsUI();
@@ -939,4 +934,4 @@
     updateStatsUI();
 </script>
 </body>
-    </html>
+                                                                       </html>
