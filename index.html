@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CyberJump: MAYHEM REPAIRED</title>
+    <title>CyberJump: MAYHEM FIXED</title>
     <style>
         html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #050505; color: #ecf0f1; font-family: 'Courier New', Courier, monospace; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         #game-container { position: relative; width: 100%; max-width: 400px; height: 100vh; max-height: 700px; border: 4px solid #45f3ff; border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; }
@@ -34,43 +34,61 @@
     canvas.width = 400; canvas.height = 600;
 
     let gameActive = false, score = 0;
-    let player = { x: 200, y: 500, width: 26, height: 36, vx: 0, vy: 0, gravity: 0.46 };
+    let player = { x: 200, y: 500, width: 26, height: 36, vx: 0, vy: 0, gravity: 0.5, jump: -12 };
+    let platforms = [{x: 150, y: 550, width: 100, height: 10}];
     let missiles = [];
     let keys = { left: false, right: false };
 
     // Spawn missiles
     setInterval(() => {
-        if(gameActive && score > 2000) {
-            missiles.push({ x: 400, y: Math.random() * 500, speed: 7, warning: 60 });
-        }
-    }, 2500);
+        if(gameActive) missiles.push({ x: 400, y: Math.random() * 500, speed: 8, warning: 60 });
+    }, 3000);
 
     function update() {
         if (!gameActive) return;
+
+        // Horizontal Movement
         if (keys.left) player.vx = -5; else if (keys.right) player.vx = 5; else player.vx *= 0.8;
-        player.x += player.vx; player.y += player.vy;
+        player.x += player.vx;
         
-        missiles.forEach(m => {
-            if (m.warning > 0) m.warning--;
-            else m.x -= m.speed;
+        // Vertical Movement (Gravity + Jump)
+        player.vy += player.gravity;
+        player.y += player.vy;
+
+        // Platform Collision
+        platforms.forEach(p => {
+            if (player.vy > 0 && player.x + player.width > p.x && player.x < p.x + p.width && 
+                player.y + player.height > p.y && player.y + player.height < p.y + p.height + player.vy) {
+                player.vy = player.jump;
+            }
         });
+
+        // Wrap around
+        if (player.x > 400) player.x = -26; if (player.x < -26) player.x = 400;
+
+        // Missile Movement
+        missiles.forEach(m => { if (m.warning > 0) m.warning--; else m.x -= m.speed; });
         missiles = missiles.filter(m => m.x > -50);
-        score++;
+        
+        if (player.y > 600) { gameActive = false; alert("Game Over!"); location.reload(); }
     }
 
     function draw() {
         ctx.clearRect(0, 0, 400, 600);
+        
+        // Draw Player
         ctx.fillStyle = '#45f3ff';
         ctx.fillRect(player.x, player.y, player.width, player.height);
         
+        // Draw Platforms
+        ctx.fillStyle = '#00ff55';
+        platforms.forEach(p => ctx.fillRect(p.x, p.y, p.width, p.height));
+
+        // Draw Missiles
         missiles.forEach(m => {
-            if (m.warning > 0) {
-                ctx.fillStyle = 'red';
-                ctx.fillText("! WARNING !", 300, m.y);
-            } else {
-                ctx.fillStyle = 'orange';
-                ctx.fillRect(m.x, m.y, 40, 10);
-            }
+            ctx.fillStyle = m.warning > 0 ? 'red' : 'orange';
+            if (m.warning > 0) ctx.fillText("! WARNING !", 300, m.y);
+            else ctx.fillRect(m.x, m.y, 40, 10);
         });
 
         if (gameActive) {
