@@ -229,9 +229,9 @@
     let cameraY = 0; 
     let basePlatformY = canvas.height - 40;
 
-    // Spaced out thresholds for real challenge
-    const ERA_2_START = 25000; 
-    const ERA_3_START = 65000; 
+    // --- RE-BALANCED TEMPORAL THRESHOLDS ---
+    const ERA_2_START = 8000;  
+    const ERA_3_START = 25000; 
 
     let currentEra = 1; 
     let previousEra = 1;
@@ -286,12 +286,12 @@
         for (let i = 0; i < count; i++) {
             y -= Math.floor(Math.random() * 45) + 75; 
             
-            let width = Math.max(45, 100 - (score / 600)); 
+            let width = Math.max(45, 100 - (score / 400)); 
             let x = Math.random() * (canvas.width - width);
             
             let movementSpeed = 0;
             if (score >= ERA_2_START) {
-                movementSpeed = (Math.random() - 0.5) * (2.0 + (score / 30000));
+                movementSpeed = (Math.random() - 0.5) * (1.8 + (score / 20000));
             }
 
             platforms.push({ x, y, width, height: 10, vx: movementSpeed });
