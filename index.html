@@ -282,7 +282,7 @@
         ".XX..XX."
     ];
 
-    // --- NEW HARDCORE ECONOMY PRICES FIXED HERE ---
+    // Core Hardcore Economy Prices Restored
     let skins = [
         { id: 'default', name: 'Neon Runner', color: '#45f3ff', price: 0, owned: true },
         { id: 'green', name: 'Matrix Overdrive', color: '#39ff14', price: 150, owned: false },
@@ -292,7 +292,6 @@
 
     const savedSkins = JSON.parse(localStorage.getItem('cyberjump_skins'));
     if (savedSkins) {
-        // Safe mapping loop to update existing user balances with new prices cleanly
         savedSkins.forEach(saved => {
             const current = skins.find(s => s.id === saved.id);
             if (current) saved.price = current.price; 
@@ -500,7 +499,6 @@
                 player.vy > 0 && 
                 player.x + player.width > platform.x &&
                 player.x < platform.x + platform.width &&
-                player.y + height >= platform.y && // structural patch parsing safeguard
                 player.y + player.height >= platform.y &&
                 player.y + player.height <= platform.y + 12
             ) {
@@ -636,6 +634,7 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
+        // Render Platforms
         platforms.forEach(p => {
             if (currentEra === 1) {
                 ctx.fillStyle = '#00ff55';
@@ -657,6 +656,7 @@
             }
         });
 
+        // Render Items
         items.forEach(it => {
             if (!it.collected) {
                 ctx.fillStyle = currentEra === 1 ? '#00ff55' : currentEra === 2 ? '#ffffff' : '#ffea00';
@@ -666,6 +666,7 @@
             }
         });
 
+        // Cleaned-up Render character loops
         if (currentEra === 1) {
             const rows = atariMatrix.length;
             const cols = atariMatrix[0].length;
@@ -683,6 +684,7 @@
             drawStickman(ctx, player.x, player.y, player.width, player.height, currentEra, player.rotation, player.color);
         }
 
+        // Notification Alerts
         ctx.textAlign = 'center';
         ctx.shadowColor = '#000000';
         ctx.shadowBlur = 4;
@@ -698,6 +700,7 @@
         }
         ctx.shadowBlur = 0;
 
+        // HUD Panels
         ctx.fillStyle = '#ecf0f1';
         ctx.font = 'bold 16px "Courier New"';
         ctx.textAlign = 'left';
@@ -866,4 +869,4 @@
     updateStatsUI();
 </script>
 </body>
-                                     </html>
+            </html>
