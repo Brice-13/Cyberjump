@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CyberJump: Evolution</title>
+    <title>CyberJump: Stickman Evolution</title>
     <style>
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: #0b0c10;
+            background-color: #050505;
             color: #ecf0f1;
             font-family: 'Courier New', Courier, monospace;
             display: flex;
@@ -33,7 +33,6 @@
             max-width: 400px;
             height: 100vh;
             max-height: 700px;
-            background: #1f2833;
             border: 4px solid #45f3ff;
             border-radius: 10px;
             box-shadow: 0 0 20px #45f3ff44;
@@ -65,7 +64,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
             outline: none;
             cursor: pointer;
         }
@@ -73,7 +71,6 @@
         #mobile-controls button:active {
             background-color: rgba(0, 255, 204, 0.5);
             color: #fff;
-            box-shadow: 0 0 25px rgba(0, 255, 204, 0.8);
         }
 
         canvas {
@@ -88,7 +85,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(11, 12, 16, 0.9);
+            background: rgba(5, 5, 5, 0.95);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -99,7 +96,7 @@
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.3rem;
             color: #45f3ff;
             text-shadow: 0 0 10px #45f3ff;
             margin-bottom: 5px;
@@ -108,7 +105,7 @@
 
         .subtitle {
             color: #66fcf1;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-bottom: 30px;
         }
 
@@ -117,13 +114,12 @@
             border: 2px solid #45f3ff;
             color: #45f3ff;
             padding: 12px 30px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-family: inherit;
             font-weight: bold;
             cursor: pointer;
             border-radius: 5px;
             transition: 0.2s;
-            box-shadow: 0 0 10px #45f3ff22;
             margin: 10px 0;
             width: 80%;
         }
@@ -136,7 +132,7 @@
 
         .stats-box {
             border: 1px solid #1f2833;
-            background: #151b24;
+            background: #0f141c;
             padding: 15px;
             border-radius: 5px;
             margin-bottom: 20px;
@@ -146,47 +142,6 @@
         .hide {
             display: none !important;
         }
-
-        .shop-container {
-            width: 90%;
-            max-height: 250px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-        }
-
-        .shop-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 12px;
-            background: #151b24;
-            border: 1px solid #45f3ff33;
-            margin: 6px 0;
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-
-        .shop-item.owned {
-            border-color: #66fcf1;
-        }
-
-        .shop-btn {
-            padding: 4px 10px;
-            font-size: 0.8rem;
-            width: auto;
-            margin: 0;
-            background: transparent;
-            border: 2px solid #45f3ff;
-            color: #45f3ff;
-            cursor: pointer;
-        }
-
-        .shop-preview-canvas {
-            background: #0b0c10;
-            border: 1px solid #1f2833;
-            border-radius: 3px;
-            margin-right: 10px;
-        }
     </style>
 </head>
 <body>
@@ -195,45 +150,27 @@
     <!-- MAIN MENU -->
     <div id="menu-screen" class="overlay">
         <h1>CyberJump</h1>
-        <div class="subtitle">// Timeline Jumper Interface Loaded...</div>
+        <div class="subtitle">// Evolutionary Timeline Matrix Online //</div>
         
         <div class="stats-box">
-            <div>HIGH SCORE: <span id="high-score-val">0</span></div>
-            <div style="margin-top: 5px;">CHIPS BALANCE: <span id="chips-total-val" style="color:#66fcf1;">0</span></div>
+            <div>PEAK ALTITUDE: <span id="high-score-val">0</span></div>
+            <div style="margin-top: 5px;">CHIPS VALUE: <span id="chips-total-val" style="color:#66fcf1;">0</span></div>
         </div>
 
-        <button id="play-btn" class="menu-btn">ENTER TEMPORAL FIELD</button>
-        <button id="shop-btn-menu" class="menu-btn">AVATAR WARDROBE</button>
-    </div>
-
-    <!-- SKIN SHOP -->
-    <div id="shop-screen" class="overlay hide">
-        <h1>Wardrobe</h1>
-        <div class="subtitle">Exchange Chips for modified digital avatars</div>
-        
-        <div style="margin-bottom: 10px; font-weight: bold;">
-            Data Chips Available: <span id="shop-chips-val" style="color:#66fcf1;">0</span>
-        </div>
-
-        <div class="shop-container" id="shop-items-list">
-            <!-- Items injected via JS -->
-        </div>
-
-        <button id="close-shop-btn" class="menu-btn" style="border-color: #ff4545; color: #ff4545;">CLOSE WARDROBE</button>
+        <button id="play-btn" class="menu-btn">INITIATE GENERATION GAUNTLET</button>
     </div>
 
     <!-- GAME OVER SCREEN -->
     <div id="gameover-screen" class="overlay hide">
         <h1 style="color: #ff4545; text-shadow: 0 0 10px #ff4545;">DESYNCHRONIZED</h1>
-        <div class="subtitle" id="fail-reason">Jumper lost terminal connection.</div>
+        <div class="subtitle">Timeline connection fractured in mid-air.</div>
         
         <div class="stats-box">
-            <div>ALTITUDE REACHED: <span id="final-score-val">0</span></div>
-            <div>CHIPS SECURED: <span id="collected-chips-val" style="color:#66fcf1;">0</span></div>
+            <div>FINAL ALTITUDE: <span id="final-score-val">0</span></div>
+            <div>TOTAL CHIPS SECURED: <span id="collected-chips-val" style="color:#66fcf1;">0</span></div>
         </div>
 
-        <button id="retry-btn" class="menu-btn">RESPAWN AVATAR</button>
-        <button id="exit-btn" class="menu-btn">RETURN TO SECTOR 0</button>
+        <button id="retry-btn" class="menu-btn">RESPAWN SYSTEM</button>
     </div>
 
     <!-- Canvas Game Port -->
@@ -259,108 +196,60 @@
     let totalChips = parseInt(localStorage.getItem('cyberjump_chips')) || 0;
     let highScore = parseInt(localStorage.getItem('cyberjump_highscore')) || 0;
     
-    // --- CUSTOM PIXEL ART MATRICES (8x8 retro characters) ---
-    const jumperSprites = {
-        default: [
-            "...XX...",
-            "..XXXX..",
-            "..X..X..",
-            ".XXXXXX.",
-            "XX.XX.XX",
-            "..XXXX..",
-            "..X..X..",
-            ".XX..XX."
-        ],
-        green: [
-            "..XXXX..",
-            ".XXXXXX.",
-            ".X.XX.X.",
-            "XXXXXXXX",
-            "XXXXXXXX",
-            ".XXXXXX.",
-            "..XXXX..",
-            ".XX..XX."
-        ],
-        purple: [
-            "...XX...",
-            "..XXXX..",
-            ".XXXXXX.",
-            "XX.XX.XX",
-            "XXXXXXXX",
-            "..XXXX..",
-            ".XX..XX.",
-            "XX....XX"
-        ],
-        gold: [
-            "..XXXX..",
-            ".XXXXXX.",
-            "XXXXXXXX",
-            ".X.XX.X.",
-            "XXXXXXXX",
-            "..XXXX..",
-            "..XXXX..",
-            ".XXX.XXX."
-        ]
-    };
-
-    let skins = [
-        { id: 'default', name: 'Neon Runner', color: '#45f3ff', spriteId: 'default', price: 0, owned: true },
-        { id: 'green', name: 'Cyber Suit', color: '#39ff14', spriteId: 'green', price: 50, owned: false },
-        { id: 'purple', name: 'Void Astronaut', color: '#b026ff', spriteId: 'purple', price: 100, owned: false },
-        { id: 'gold', name: 'Golden Android', color: '#ffd700', spriteId: 'gold', price: 250, owned: false }
+    // Stiff Atari Pixel Matrix
+    const atariMatrix = [
+        "...XX...",
+        "..XXXX..",
+        "..X..X..",
+        ".XXXXXX.",
+        "XX.XX.XX",
+        "..XXXX..",
+        "..X..X..",
+        ".XX..XX."
     ];
 
-    const savedSkins = JSON.parse(localStorage.getItem('cyberjump_skins'));
-    if (savedSkins) {
-        skins = savedSkins;
-    }
-    let selectedSkin = localStorage.getItem('cyberjump_activeskin') || 'default';
-
-    // Player Object
+    // Player Physics Properties
     const player = {
         x: canvas.width / 2 - 14,
         y: canvas.height - 100,
-        width: 28, 
-        height: 32,
+        width: 26, 
+        height: 36,
         vx: 0,
         vy: 0,
-        speed: 6.0,
-        jumpForce: -13.5, 
-        gravity: 0.48,
-        color: '#45f3ff',
-        spriteId: 'default',
-        hasShield: false,
-        magnetTimer: 0 // Duration left for Magnet Powerup
+        speed: 5.8,
+        jumpForce: -13.2, 
+        gravity: 0.46,
+        rotation: 0 // Active mathematical tracking for parkour flips!
     };
 
     let platforms = [];
     let items = [];
+    let backgroundBuildings = []; // Moving skyscrapers for Era 3
     let cameraY = 0; 
     let basePlatformY = canvas.height - 40;
 
-    // Temporal Era Variables
+    // Era Spacing Thresholds (Cranked up significantly for intense challenge)
+    const ERA_2_START = 25000; 
+    const ERA_3_START = 65000; 
+
     let currentEra = 1; 
     let previousEra = 1;
-    let eraLeapTimer = 0; // Show leap transition animation
-    let stars = [];      // Parallax starfield for Era 2 & 3
-    let screenShake = 0; // Glitch shake factor
-
-    // Milestone & Notification UI Tracking
-    let nextMilestoneScore = 1000; 
-    let milestoneAlertTimer = 0;
-    let shieldBreakAlertTimer = 0;
+    let eraLeapTimer = 0; 
+    let screenShake = 0; 
 
     // Controls tracking
     const keys = { left: false, right: false };
 
-    function initStars() {
-        stars = [];
-        for (let i = 0; i < 40; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 2 + 1,
-                speed: Math.random() * 0.5 + 0.2
+    // Procedural Synthwave Skylines for Era 3
+    function initBuildings() {
+        backgroundBuildings = [];
+        for (let i = 0; i < 8; i++) {
+            backgroundBuildings.push({
+                x: i * 60 + Math.random() * 20,
+                y: Math.random() * 300 + 300,
+                width: Math.random() * 30 + 40,
+                height: 400,
+                speedFactor: 0.15 // Creates gorgeous 3D parallax depth
             });
         }
     }
@@ -368,117 +257,59 @@
     function updateStatsUI() {
         document.getElementById('high-score-val').textContent = highScore;
         document.getElementById('chips-total-val').textContent = totalChips;
-        document.getElementById('shop-chips-val').textContent = totalChips;
     }
 
-    // Controls listeners
+    // Keyboard bindings
     window.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
     });
-
     window.addEventListener('keyup', (e) => {
         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
     });
 
+    // Touch bindings
     const btnLeft = document.getElementById('btn-left');
     const btnRight = document.getElementById('btn-right');
-
     function simulateKey(type, keyName) {
-        const event = new KeyboardEvent(type, { key: keyName });
-        window.dispatchEvent(event);
+        window.dispatchEvent(new KeyboardEvent(type, { key: keyName }));
     }
-
     btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); simulateKey('keydown', 'ArrowLeft'); });
     btnLeft.addEventListener('touchend', (e) => { e.preventDefault(); simulateKey('keyup', 'ArrowLeft'); });
-
     btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); simulateKey('keydown', 'ArrowRight'); });
     btnRight.addEventListener('touchend', (e) => { e.preventDefault(); simulateKey('keyup', 'ArrowRight'); });
 
-    // Procedural Vector Generation
+    // Procedural Platforms Generator
     function generatePlatforms(startY, count) {
         let y = startY;
         for (let i = 0; i < count; i++) {
-            y -= Math.floor(Math.random() * 50) + 75; 
-            let width = Math.max(60, 110 - (score / 350)); // Spaced scaling further out
+            y -= Math.floor(Math.random() * 45) + 75; 
+            
+            // Platforms shrink significantly as your altitude gets higher
+            let width = Math.max(45, 100 - (score / 600)); 
             let x = Math.random() * (canvas.width - width);
             
-            platforms.push({ x, y, width, height: 12 });
+            // Era 2 & 3 introduce moving platforms to scale the difficulty
+            let movementSpeed = 0;
+            if (score >= ERA_2_START) {
+                // Higher score = speedier platform tracks
+                movementSpeed = (Math.random() - 0.5) * (2.0 + (score / 30000));
+            }
 
-            let spawnRoll = Math.random();
-            // 6% Shield, 6% Magnet, 28% Chip
-            if (spawnRoll < 0.06) {
+            platforms.push({ x, y, width, height: 10, vx: movementSpeed });
+
+            // 25% chance to drop chip rewards
+            if (Math.random() < 0.25) {
                 items.push({
-                    x: x + width / 2 - 10,
-                    y: y - 28,
-                    width: 20,
-                    height: 20,
-                    type: 'shield',
-                    collected: false
-                });
-            } else if (spawnRoll >= 0.06 && spawnRoll < 0.12) {
-                items.push({
-                    x: x + width / 2 - 10,
-                    y: y - 28,
-                    width: 20,
-                    height: 20,
-                    type: 'magnet',
-                    collected: false
-                });
-            } else if (spawnRoll >= 0.12 && spawnRoll < 0.40) {
-                items.push({
-                    x: x + width / 2 - 7,
-                    y: y - 25,
-                    width: 14,
-                    height: 14,
-                    type: 'chip',
+                    x: x + width / 2 - 6,
+                    y: y - 22,
+                    width: 12,
+                    height: 12,
                     collected: false
                 });
             }
         }
-    }
-
-    function drawPixelSprite(renderContext, spriteMatrix, targetX, targetY, spriteWidth, spriteHeight, primaryColor) {
-        const rows = spriteMatrix.length;
-        const cols = spriteMatrix[0].length;
-        const pixelW = spriteWidth / cols;
-        const pixelH = spriteHeight / rows;
-
-        if (currentEra === 3) {
-            renderContext.shadowColor = primaryColor;
-            renderContext.shadowBlur = 12; 
-        } else if (currentEra === 2) {
-            renderContext.shadowColor = primaryColor;
-            renderContext.shadowBlur = 4;  
-        } else {
-            renderContext.shadowBlur = 0;  
-        }
-
-        renderContext.fillStyle = primaryColor;
-
-        for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < cols; c++) {
-                if (spriteMatrix[r][c] === 'X') {
-                    if (currentEra === 1) {
-                        renderContext.fillRect(
-                            targetX + (c * pixelW), 
-                            targetY + (r * pixelH), 
-                            pixelW - 0.5, 
-                            pixelH - 0.5
-                        );
-                    } else {
-                        renderContext.fillRect(
-                            targetX + (c * pixelW), 
-                            targetY + (r * pixelH), 
-                            pixelW + 0.3, 
-                            pixelH + 0.3
-                        );
-                    }
-                }
-            }
-        }
-        renderContext.shadowBlur = 0; 
     }
 
     function initGame() {
@@ -486,28 +317,18 @@
         cameraY = 0;
         platforms = [];
         items = [];
-        nextMilestoneScore = 1000;
-        milestoneAlertTimer = 0;
-        shieldBreakAlertTimer = 0;
-        player.hasShield = false;
-        player.magnetTimer = 0;
         currentEra = 1;
         previousEra = 1;
         eraLeapTimer = 0;
         screenShake = 0;
+        player.rotation = 0;
         
-        initStars();
+        initBuildings();
 
-        const activeObj = skins.find(s => s.id === selectedSkin);
-        if (activeObj) {
-            player.color = activeObj.color;
-            player.spriteId = activeObj.spriteId;
-        }
+        platforms.push({ x: 0, y: basePlatformY, width: canvas.width, height: 40, vx: 0 });
+        generatePlatforms(canvas.height - 80, 22);
 
-        platforms.push({ x: 0, y: basePlatformY, width: canvas.width, height: 40 });
-        generatePlatforms(canvas.height - 80, 20);
-
-        player.x = canvas.width / 2 - 14;
+        player.x = canvas.width / 2 - 13;
         player.y = canvas.height - 120;
         player.vx = 0;
         player.vy = 0;
@@ -521,14 +342,9 @@
     function update() {
         if (!gameActive) return;
 
-        // Apply controls
-        if (keys.left) {
-            player.vx = -player.speed;
-        } else if (keys.right) {
-            player.vx = player.speed;
-        } else {
-            player.vx *= 0.78; 
-        }
+        if (keys.left) player.vx = -player.speed;
+        else if (keys.right) player.vx = player.speed;
+        else player.vx *= 0.76; 
 
         player.x += player.vx;
         player.vy += player.gravity;
@@ -537,7 +353,20 @@
         if (player.x + player.width < 0) player.x = canvas.width;
         if (player.x > canvas.width) player.x = -player.width;
 
-        // Camera scrolling
+        // --- ANIMATION TIMELINE CALCULATIONS ---
+        if (currentEra === 1) {
+            player.rotation = 0; // Stiff structural 8-bit block
+        } 
+        else if (currentEra === 2) {
+            // Dynamic Sway Physics (Leans into velocity)
+            player.rotation = player.vx * 0.04;
+        } 
+        else {
+            // Full Acrobatics System (Continuous 360-degree backflips on release velocity)
+            player.rotation += 0.08 + (Math.abs(player.vy) * 0.01);
+        }
+
+        // Camera loops
         if (player.y < canvas.height / 2) {
             let diff = (canvas.height / 2) - player.y;
             cameraY += diff;
@@ -546,12 +375,13 @@
             platforms.forEach(p => p.y += diff);
             items.forEach(it => it.y += diff);
 
-            if (currentEra >= 2) {
-                stars.forEach(s => {
-                    s.y += diff * s.speed;
-                    if (s.y > canvas.height) {
-                        s.y = 0;
-                        s.x = Math.random() * canvas.width;
+            // Move background elements down at slower speed (Parallax effect)
+            if (currentEra === 3) {
+                backgroundBuildings.forEach(b => {
+                    b.y += diff * b.speedFactor;
+                    if (b.y > canvas.height + 100) {
+                        b.y = -150;
+                        b.x = Math.random() * (canvas.width - b.width);
                     }
                 });
             }
@@ -559,84 +389,55 @@
             score += Math.floor(diff);
         }
 
-        // --- EXTENDED SPACING ERA CHECK ---
-        if (score < 3000) {
-            currentEra = 1;
-        } else if (score >= 3000 && score < 8000) {
-            currentEra = 2;
-        } else {
-            currentEra = 3;
-        }
+        // Move active moving platforms (Difficulty scaling)
+        platforms.forEach(p => {
+            if (p.vx !== 0) {
+                p.x += p.vx;
+                if (p.x <= 0 || p.x + p.width >= canvas.width) {
+                    p.vx *= -1; // Bounce off screen borders cleanly
+                }
+            }
+        });
+
+        // Current Era evaluation loops
+        if (score < ERA_2_START) currentEra = 1;
+        else if (score >= ERA_2_START && score < ERA_3_START) currentEra = 2;
+        else currentEra = 3;
 
         if (currentEra !== previousEra) {
-            eraLeapTimer = 140; 
-            screenShake = 35; // Intense warp shake!
+            eraLeapTimer = 130; 
+            screenShake = 30; // Structural glitch blast
             previousEra = currentEra;
         }
 
-        // Handle shake reduction
         if (screenShake > 0) screenShake *= 0.92;
-
-        // Milestone point checker
-        if (score >= nextMilestoneScore) {
-            nextMilestoneScore += 1000; 
-            totalChips += 100;         
-            milestoneAlertTimer = 100; 
-            localStorage.setItem('cyberjump_chips', totalChips);
-            updateStatsUI();
-        }
-
-        // Countdown timers
-        if (milestoneAlertTimer > 0) milestoneAlertTimer--;
-        if (shieldBreakAlertTimer > 0) shieldBreakAlertTimer--;
         if (eraLeapTimer > 0) eraLeapTimer--;
-        if (player.magnetTimer > 0) player.magnetTimer--;
 
-        // Collision logic landing loops
+        // Collisions checks
         platforms.forEach(platform => {
             if (
                 player.vy > 0 && 
                 player.x + player.width > platform.x &&
                 player.x < platform.x + platform.width &&
                 player.y + player.height >= platform.y &&
-                player.y + platform.height <= platform.y + 12
+                player.y + player.height <= platform.y + 12
             ) {
                 player.y = platform.y - player.height;
                 player.vy = player.jumpForce; 
             }
         });
 
-        // Item Power-Up & Collectible Collisions
         items.forEach(item => {
-            if (!item.collected) {
-                // JETPACK JOYRIDE MAGNET FIELD: Pull chips closer if magnet is running
-                if (player.magnetTimer > 0 && item.type === 'chip') {
-                    let dx = (player.x + player.width / 2) - (item.x + item.width / 2);
-                    let dy = (player.y + player.height / 2) - (item.y + item.height / 2);
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 150) { // Magnet pull distance
-                        item.x += (dx / dist) * 7.5;
-                        item.y += (dy / dist) * 7.5;
-                    }
-                }
-
-                if (
-                    player.x < item.x + item.width &&
-                    player.x + player.width > item.x &&
-                    player.y < item.y + item.height &&
-                    player.y + player.height > item.y
-                ) {
-                    item.collected = true;
-                    if (item.type === 'shield') {
-                        player.hasShield = true;
-                    } else if (item.type === 'magnet') {
-                        player.magnetTimer = 480; // 8 seconds at 60fps
-                    } else {
-                        totalChips++;
-                        localStorage.setItem('cyberjump_chips', totalChips);
-                        updateStatsUI();
-                    }
-                }
+            if (!item.collected && 
+                player.x < item.x + item.width &&
+                player.x + player.width > item.x &&
+                player.y < item.y + item.height &&
+                player.y + player.height > item.y
+            ) {
+                item.collected = true;
+                totalChips += 2;
+                localStorage.setItem('cyberjump_chips', totalChips);
+                updateStatsUI();
             }
         });
 
@@ -648,238 +449,200 @@
             generatePlatforms(highestPlatformY, 15);
         }
 
-        // Fall handling boundary engine check
-        if (player.y > canvas.height) {
-            if (player.hasShield) {
-                player.hasShield = false;
-                player.y = canvas.height / 2;
-                player.vy = player.jumpForce * 1.3; 
-                shieldBreakAlertTimer = 120; 
-            } else {
-                endGame();
-            }
+        if (player.y > canvas.height) endGame();
+    }
+
+    // Custom Stickman Generator Engine Rule
+    function drawStickman(renderCtx, x, y, width, height, era, rotationAngle, color) {
+        renderCtx.save();
+        // Pivot around the geometric center of the sprite
+        renderCtx.translate(x + width / 2, y + height / 2);
+        renderCtx.rotate(rotationAngle);
+
+        renderCtx.strokeStyle = color;
+        renderCtx.fillStyle = color;
+        renderCtx.lineWidth = era === 3 ? 3.5 : 2;
+
+        if (era === 2) {
+            // Era 2: Blueprint Stage - Geometric angular stick figure
+            // Head
+            renderCtx.strokeRect(-5, -16, 10, 10);
+            // Torso
+            renderCtx.beginPath();
+            renderCtx.moveTo(0, -6);
+            renderCtx.lineTo(0, 6);
+            // Arms
+            renderCtx.moveTo(-10, -3);
+            renderCtx.lineTo(10, -3);
+            // Legs
+            renderCtx.moveTo(0, 6);
+            renderCtx.lineTo(-8, 16);
+            renderCtx.moveTo(0, 6);
+            renderCtx.lineTo(8, 16);
+            renderCtx.stroke();
+        } 
+        else if (era === 3) {
+            // Era 3: Neon Skyline - Perfectly smooth, organic fluid parkour vector artist
+            renderCtx.shadowColor = color;
+            renderCtx.shadowBlur = 12;
+
+            // Head circle
+            renderCtx.beginPath();
+            renderCtx.arc(0, -14, 5, 0, Math.PI * 2);
+            renderCtx.fill();
+
+            // Spine
+            renderCtx.beginPath();
+            renderCtx.moveTo(0, -9);
+            renderCtx.lineTo(0, 5);
+
+            // Dynamic crouching limbs based on physics movement direction
+            let legSway = Math.sin(Date.now() * 0.015) * 6;
+            // Arms swinging
+            renderCtx.moveTo(0, -6);
+            renderCtx.lineTo(-11, -2 + (player.vy * 0.3));
+            renderCtx.moveTo(0, -6);
+            renderCtx.lineTo(11, -2 - (player.vy * 0.3));
+
+            // Legs expanding/compressing based on jumps
+            renderCtx.moveTo(0, 5);
+            renderCtx.lineTo(-7 + legSway, 16);
+            renderCtx.moveTo(0, 5);
+            renderCtx.lineTo(7 - legSway, 16);
+            renderCtx.stroke();
         }
+        renderCtx.restore();
     }
 
     function draw() {
         ctx.save();
-        
-        // --- VISUAL GLITCH WARP SCREEN SHAKE ---
-        if (screenShake > 1) {
-            let dx = (Math.random() - 0.5) * screenShake;
-            let dy = (Math.random() - 0.5) * screenShake;
-            ctx.translate(dx, dy);
+        if (screenShake > 0) {
+            ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
         }
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // --- ERA BACKGROUNDS ---
+        // --- BACKGROUND ARCHITECTURES BY TIMELINE ---
         if (currentEra === 1) {
-            // Atari Era: Raw Green Scanlines
-            ctx.fillStyle = '#020902'; // Ultra dark retro matrix green tint
+            // Era 1: Flat Dark Virtual Terminal Void
+            ctx.fillStyle = '#030703';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = 'rgba(0, 255, 100, 0.05)';
-            for (let i = 0; i < canvas.height; i += 4) {
-                ctx.fillRect(0, i, canvas.width, 1.5);
-            }
+            ctx.fillStyle = 'rgba(0, 255, 60, 0.04)';
+            for (let i = 0; i < canvas.height; i += 4) ctx.fillRect(0, i, canvas.width, 1.5);
         } 
         else if (currentEra === 2) {
-            // 16-Bit Era: Metallic/Cyber Hangar Depth
-            ctx.fillStyle = '#070b12';
+            // Era 2: Classic Draft Graph/Blueprint Board
+            ctx.fillStyle = '#0a2240';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-            stars.forEach(s => {
-                ctx.fillRect(s.x, s.y, s.size, s.size);
-            });
+            
+            // Render drafting blueprints layout lines grid mesh
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < canvas.width; x += 25) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += 25) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+            }
         } 
         else {
-            // Modern Era: Glowing Radial Gradient Synthwave Grid
-            let gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 50, canvas.width/2, canvas.height/2, 400);
-            gradient.addColorStop(0, '#1a0022'); // Cyber pink/magenta core
-            gradient.addColorStop(1, '#05000c');
-            ctx.fillStyle = gradient;
+            // Era 3: Neon Outlines Skyline Metropolises
+            let skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            skyGrad.addColorStop(0, '#0c0214');
+            skyGrad.addColorStop(1, '#24042b');
+            ctx.fillStyle = skyGrad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Parallax Vector Stars
-            ctx.fillStyle = '#ff00ff';
-            stars.forEach(s => {
-                ctx.shadowColor = '#ff00ff';
-                ctx.shadowBlur = 6;
-                ctx.fillRect(s.x, s.y, s.size + 1.2, s.size + 1.2);
+            // Draw glowing parallax skyscraper vectors
+            backgroundBuildings.forEach(b => {
+                ctx.fillStyle = '#140321';
+                ctx.strokeStyle = '#ff00aa';
+                ctx.lineWidth = 1.5;
+                ctx.shadowColor = '#ff00aa';
+                ctx.shadowBlur = 5;
+                ctx.fillRect(b.x, b.y, b.width, b.height);
+                ctx.strokeRect(b.x, b.y, b.width, b.height);
             });
             ctx.shadowBlur = 0;
         }
 
-        // --- DYNAMIC INVERSION SHOCKWAVE FLASH ---
-        if (eraLeapTimer > 110) {
-            // Screen Flash inversion simulation
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-            ctx.fillRect(0,0, canvas.width, canvas.height);
+        // Flash screen logic during leaps
+        if (eraLeapTimer > 105) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
-        // --- DRAW PLATFORMS ---
+        // --- RENDER PLATFORMS ---
         platforms.forEach(p => {
             if (currentEra === 1) {
                 ctx.fillStyle = '#00ff55';
                 ctx.fillRect(p.x, p.y, p.width, p.height);
-            } 
-            else if (currentEra === 2) {
-                ctx.fillStyle = '#1c2d3d';
-                ctx.strokeStyle = '#43a59d';
+            } else if (currentEra === 2) {
+                ctx.fillStyle = 'transparent';
+                ctx.strokeStyle = '#ffffff'; // White technical draft outlines
                 ctx.lineWidth = 2;
-                ctx.fillRect(p.x, p.y, p.width, p.height);
                 ctx.strokeRect(p.x, p.y, p.width, p.height);
-                // Subtreads
-                ctx.fillStyle = '#0a101d';
-                ctx.fillRect(p.x + 4, p.y + 3, p.width - 8, 2);
-            } 
-            else {
-                // Neon Pink & Cyan Modern Grids
-                ctx.fillStyle = '#05010a';
-                ctx.strokeStyle = '#ff00ff';
-                ctx.shadowColor = '#ff00ff';
-                ctx.shadowBlur = 10;
-                ctx.lineWidth = 2.5;
+            } else {
+                ctx.fillStyle = '#0a0112';
+                ctx.strokeStyle = '#45f3ff';
+                ctx.lineWidth = 3;
+                ctx.shadowColor = '#45f3ff';
+                ctx.shadowBlur = 8;
                 ctx.fillRect(p.x, p.y, p.width, p.height);
                 ctx.strokeRect(p.x, p.y, p.width, p.height);
                 ctx.shadowBlur = 0;
             }
         });
 
-        // --- DRAW ITEMS ---
+        // --- RENDER ITEMS ---
         items.forEach(it => {
             if (!it.collected) {
-                if (it.type === 'shield') {
-                    if (currentEra === 1) {
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fillRect(it.x, it.y, it.width, it.height);
-                    } else if (currentEra === 2) {
-                        ctx.fillStyle = '#45f3ff';
-                        ctx.beginPath();
-                        ctx.arc(it.x + 10, it.y + 10, 8, 0, Math.PI * 2);
-                        ctx.fill();
-                    } else {
-                        ctx.strokeStyle = '#ffffff';
-                        ctx.fillStyle = '#45f3ff';
-                        ctx.shadowColor = '#45f3ff';
-                        ctx.shadowBlur = 15;
-                        ctx.lineWidth = 2;
-                        ctx.beginPath();
-                        ctx.arc(it.x + 10, it.y + 10, 8, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.stroke();
-                        ctx.shadowBlur = 0;
-                    }
-                } else if (it.type === 'magnet') {
-                    // Render Jetpack Joyride Magnet Powerup!
-                    ctx.fillStyle = '#ff3333';
-                    ctx.strokeStyle = '#ffffff';
-                    ctx.shadowColor = '#ff3333';
-                    ctx.shadowBlur = 10;
-                    ctx.lineWidth = 1.5;
-                    ctx.fillRect(it.x, it.y, 20, 15);
-                    // Magnetic arches
-                    ctx.fillStyle = '#cccccc';
-                    ctx.fillRect(it.x + 2, it.y + 12, 5, 5);
-                    ctx.fillRect(it.x + 13, it.y + 12, 5, 5);
-                    ctx.shadowBlur = 0;
-                } else {
-                    // Data Chip
-                    if (currentEra === 1) {
-                        ctx.fillStyle = '#00ff55';
-                        ctx.fillRect(it.x + 2, it.y + 2, 10, 10);
-                    } else if (currentEra === 2) {
-                        ctx.fillStyle = '#ffe400';
-                        ctx.beginPath();
-                        ctx.arc(it.x + 7, it.y + 7, 6, 0, Math.PI * 2);
-                        ctx.fill();
-                    } else {
-                        ctx.fillStyle = '#ffe400';
-                        ctx.shadowColor = '#ffe400';
-                        ctx.shadowBlur = 8;
-                        ctx.beginPath();
-                        ctx.moveTo(it.x + it.width / 2, it.y);
-                        ctx.lineTo(it.x + it.width, it.y + it.height / 2);
-                        ctx.lineTo(it.x + it.width / 2, it.y + it.height);
-                        ctx.lineTo(it.x, it.y + it.height / 2);
-                        ctx.closePath();
-                        ctx.fill();
-                        ctx.shadowBlur = 0;
-                    }
-                }
+                ctx.fillStyle = currentEra === 1 ? '#00ff55' : currentEra === 2 ? '#ffffff' : '#ffea00';
+                if (currentEra === 3) { ctx.shadowColor = '#ffea00'; ctx.shadowBlur = 8; }
+                ctx.fillRect(it.x, it.y, it.width, it.height);
+                ctx.shadowBlur = 0;
             }
         });
 
-        // --- DRAW CHARACTER ---
-        const matrix = jumperSprites[player.spriteId] || jumperSprites.default;
-        drawPixelSprite(ctx, matrix, player.x, player.y, player.width, player.height, player.color);
-
-        // --- MAGNET ENERGY ARCS ---
-        if (player.magnetTimer > 0) {
-            ctx.strokeStyle = '#ffe400';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.arc(player.x + player.width/2, player.y + player.height/2, 38, 0, Math.PI * 2);
-            ctx.stroke();
-            // Tiny lightning details
-            ctx.fillStyle = '#ffe400';
-            for (let i = 0; i < 4; i++) {
-                let angle = Math.random() * Math.PI * 2;
-                let lx = player.x + player.width/2 + Math.cos(angle) * 38;
-                let ly = player.y + player.height/2 + Math.sin(angle) * 38;
-                ctx.fillRect(lx, ly, 3, 3);
+        // --- RENDER CHARACTER ---
+        if (currentEra === 1) {
+            // Keep rigid, unmoving block structure for Atari stage
+            const activeColor = skins.find(s => s.id === selectedSkin)?.color || '#45f3ff';
+            const rows = atariMatrix.length;
+            const cols = atariMatrix[0].length;
+            const pW = player.width / cols;
+            const pH = player.height / rows;
+            ctx.fillStyle = activeColor;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (atariMatrix[r][c] === 'X') {
+                        ctx.fillRect(player.x + (c * pW), player.y + (r * pH), pW - 0.5, pH - 0.5);
+                    }
+                }
             }
+        } else {
+            // Evolve character into dynamic flipping stick figures for Era 2 & 3
+            const activeColor = skins.find(s => s.id === selectedSkin)?.color || '#45f3ff';
+            drawStickman(ctx, player.x, player.y, player.width, player.height, currentEra, player.rotation, activeColor);
         }
 
-        // --- DEFLECTOR SHIELD BUBBLE ---
-        if (player.hasShield) {
-            ctx.strokeStyle = '#45f3ff';
-            ctx.lineWidth = currentEra === 3 ? 3.5 : 2;
-            if (currentEra === 3) ctx.shadowBlur = 12;
-            ctx.beginPath();
-            ctx.arc(player.x + player.width / 2, player.y + player.height / 2, 25, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.shadowBlur = 0;
-        }
-
-        // --- HUD ALERTS & TIME WARP NOTIFICATIONS ---
+        // --- SYSTEM TEXT ALERTS OVERLAYS ---
         ctx.textAlign = 'center';
         ctx.shadowColor = '#000000';
-        ctx.shadowBlur = 6;
+        ctx.shadowBlur = 4;
 
         if (eraLeapTimer > 0) {
             ctx.fillStyle = '#ff0055';
-            ctx.font = 'bold 24px "Courier New"';
-            ctx.fillText("⚠️ TIMELINE LEAP DETECTED! ⚠️", canvas.width / 2, canvas.height / 2.5);
-            
-            ctx.fillStyle = '#66fcf1';
-            ctx.font = '14px "Courier New"';
-            let eraName = currentEra === 2 ? "16-BIT ARCADE ACTIVE" : "MODERN NEON VECTOR ACTIVE";
-            ctx.fillText(eraName, canvas.width / 2, (canvas.height / 2.5) + 26);
-        }
-
-        if (milestoneAlertTimer > 0 && eraLeapTimer <= 0) {
-            ctx.fillStyle = milestoneAlertTimer % 10 < 5 ? '#ff3b30' : '#45f3ff';
             ctx.font = 'bold 22px "Courier New"';
-            ctx.fillText("✨ MILESTONE CLEARED! ✨", canvas.width / 2, canvas.height / 3);
+            ctx.fillText("⚠️ TIMELINE RIFT DETECTED ⚠️", canvas.width / 2, canvas.height / 2.5);
+            ctx.fillStyle = '#66fcf1';
             ctx.font = '13px "Courier New"';
-            ctx.fillStyle = '#ecf0f1';
-            ctx.fillText("+100 DATA CHIPS SYNCHRONIZED", canvas.width / 2, (canvas.height / 3) + 30);
-        }
-
-        if (shieldBreakAlertTimer > 0) {
-            ctx.fillStyle = '#ff3b30';
-            ctx.font = 'bold 20px "Courier New"';
-            ctx.fillText("💥 SHIELD SHATTERED! 💥", canvas.width / 2, canvas.height / 1.8);
-            ctx.font = '13px "Courier New"';
-            ctx.fillStyle = '#ecf0f1';
-            ctx.fillText("DEFLECTOR DISCHARGED - ALTITUDE PRESERVED", canvas.width / 2, (canvas.height / 1.8) + 26);
+            let msg = currentEra === 2 ? "LOADING ERA_2: BLUEPRINT MATRIX" : "LOADING ERA_3: URBAN VECTOR CORES";
+            ctx.fillText(msg, canvas.width / 2, (canvas.height / 2.5) + 26);
         }
         ctx.shadowBlur = 0;
 
-        // --- HUDBARS ---
+        // HUD Panels
         ctx.fillStyle = '#ecf0f1';
         ctx.font = 'bold 16px "Courier New"';
         ctx.textAlign = 'left';
@@ -887,15 +650,10 @@
         ctx.fillStyle = '#ffe400';
         ctx.fillText(`CHIPS: ${totalChips}`, 15, 55);
 
-        if (player.magnetTimer > 0) {
-            ctx.fillStyle = '#ff3333';
-            ctx.fillText(`🧲 MAGNETS ENGAGED`, 15, 80);
-        }
-
         ctx.textAlign = 'right';
-        ctx.fillStyle = currentEra === 1 ? '#00ff55' : currentEra === 2 ? '#5bc0be' : '#ff00ff';
-        let eraText = currentEra === 1 ? "ERA: 8-BIT" : currentEra === 2 ? "ERA: 16-BIT" : "ERA: HYPER-VECTOR";
-        ctx.fillText(eraText, canvas.width - 15, 30);
+        ctx.fillStyle = currentEra === 1 ? '#00ff55' : currentEra === 2 ? '#ffffff' : '#ff00aa';
+        let eraLabel = currentEra === 1 ? "1980 // ATARI" : currentEra === 2 ? "1995 // BLUEPRINT" : "2026 // VECTOR";
+        ctx.fillText(eraLabel, canvas.width - 15, 30);
 
         ctx.restore();
     }
@@ -910,103 +668,25 @@
     function endGame() {
         gameActive = false;
         document.getElementById('mobile-controls').classList.add('hide');
-
         if (score > highScore) {
             highScore = score;
             localStorage.setItem('cyberjump_highscore', highScore);
         }
-
         document.getElementById('final-score-val').textContent = score;
         document.getElementById('collected-chips-val').textContent = totalChips;
         document.getElementById('gameover-screen').classList.remove('hide');
     }
 
-    // --- WARDROBE SHOP LOGIC ---
-    function populateShop() {
-        const listContainer = document.getElementById('shop-items-list');
-        listContainer.innerHTML = '';
-
-        skins.forEach((skin) => {
-            const row = document.createElement('div');
-            row.className = `shop-item ${skin.owned ? 'owned' : ''}`;
-            
-            let actionBtnHtml = '';
-            if (skin.owned) {
-                if (skin.id === selectedSkin) {
-                    actionBtnHtml = `<span style="color: #66fcf1; font-weight: bold;">ACTIVE</span>`;
-                } else {
-                    actionBtnHtml = `<button class="shop-btn" onclick="selectSkin('${skin.id}')">EQUIP</button>`;
-                }
-            } else {
-                actionBtnHtml = `<button class="shop-btn" onclick="buySkin('${skin.id}')">BUY (${skin.price} C)</button>`;
-            }
-
-            row.innerHTML = `
-                <div style="display: flex; align-items: center;">
-                    <canvas id="preview-${skin.id}" class="shop-preview-canvas" width="24" height="24"></canvas>
-                    <span>${skin.name}</span>
-                </div>
-                <div>${actionBtnHtml}</div>
-            `;
-            listContainer.appendChild(row);
-
-            const pCanvas = document.getElementById(`preview-${skin.id}`);
-            const pCtx = pCanvas.getContext('2d');
-            const targetMatrix = jumperSprites[skin.spriteId];
-            drawPixelSprite(pCtx, targetMatrix, 4, 2, 16, 20, skin.color);
-        });
-    }
-
-    window.buySkin = function(id) {
-        const skin = skins.find(s => s.id === id);
-        if (skin && totalChips >= skin.price) {
-            totalChips -= skin.price;
-            skin.owned = true;
-            localStorage.setItem('cyberjump_chips', totalChips);
-            localStorage.setItem('cyberjump_skins', JSON.stringify(skins));
-            selectSkin(id);
-        } else {
-            alert("Insufficient Core Assets. Reach higher altitudes!");
-        }
-    }
-
-    window.selectSkin = function(id) {
-        selectedSkin = id;
-        localStorage.setItem('cyberjump_activeskin', selectedSkin);
-        updateStatsUI();
-        populateShop();
-    }
-
-    // Click Handlers
     document.getElementById('play-btn').addEventListener('click', () => {
         document.getElementById('menu-screen').classList.add('hide');
         initGame();
     });
-
     document.getElementById('retry-btn').addEventListener('click', () => {
         document.getElementById('gameover-screen').classList.add('hide');
         initGame();
     });
 
-    document.getElementById('exit-btn').addEventListener('click', () => {
-        document.getElementById('gameover-screen').classList.add('hide');
-        document.getElementById('menu-screen').classList.remove('hide');
-        updateStatsUI();
-    });
-
-    document.getElementById('shop-btn-menu').addEventListener('click', () => {
-        document.getElementById('menu-screen').classList.add('hide');
-        document.getElementById('shop-screen').classList.remove('hide');
-        populateShop();
-    });
-
-    document.getElementById('close-shop-btn').addEventListener('click', () => {
-        document.getElementById('shop-screen').classList.add('hide');
-        document.getElementById('menu-screen').classList.remove('hide');
-        updateStatsUI();
-    });
-
     updateStatsUI();
 </script>
 </body>
-        </html>
+                                   </html>
