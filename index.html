@@ -3,295 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CyberJump: Championship Edition</title>
+    <title>CyberJump: MAYHEM EDITION</title>
     <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #050505;
-            color: #ecf0f1;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: manipulation;
-        }
-
-        #game-container {
-            position: relative;
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            max-height: 700px;
-            border: 4px solid #45f3ff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px #45f3ff44;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        #mobile-controls {
-            position: absolute;
-            bottom: 40px;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 30px;
-            z-index: 100;
-        }
-
-        #mobile-controls button {
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            background-color: rgba(0, 0, 0, 0.7);
-            color: #00ffcc;
-            font-size: 32px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            outline: none;
-            cursor: pointer;
-        }
-
-        #mobile-controls button:active {
-            background-color: rgba(0, 255, 204, 0.5);
-            color: #fff;
-        }
-
-        canvas {
-            width: 100%;
-            flex-grow: 1;
-            display: block;
-        }
-
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 5, 5, 0.95);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            text-align: center;
-            z-index: 10;
-        }
-
-        h1 {
-            font-size: 2.3rem;
-            color: #45f3ff;
-            text-shadow: 0 0 10px #45f3ff;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .subtitle {
-            color: #66fcf1;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-        }
-
-        .menu-btn {
-            background: transparent;
-            border: 2px solid #45f3ff;
-            color: #45f3ff;
-            padding: 10px 25px;
-            font-size: 1.1rem;
-            font-family: inherit;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: 0.2s;
-            margin: 6px 0;
-            width: 85%;
-        }
-
-        .menu-btn:hover {
-            background: #45f3ff;
-            color: #0b0c10;
-            box-shadow: 0 0 15px #45f3ff;
-        }
-
-        .stats-box {
-            border: 1px solid #1f2833;
-            background: #0f141c;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 12px;
-            width: 85%;
-        }
-
-        .leaderboard-title {
-            font-size: 0.85rem;
-            color: #ffe400;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .leaderboard-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: #aaa;
-            padding: 3px 10px;
-            font-family: monospace;
-        }
-
-        .hide {
-            display: none !important;
-        }
-
-        .shop-container {
-            width: 90%;
-            max-height: 280px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-        }
-
-        .shop-section-title {
-            font-size: 0.9rem;
-            color: #ffe400;
-            text-align: left;
-            margin: 10px 5px 5px 5px;
-            text-transform: uppercase;
-            border-bottom: 1px solid #1f2833;
-            padding-bottom: 2px;
-        }
-
-        .shop-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 10px;
-            background: #151b24;
-            border: 1px solid #45f3ff33;
-            margin: 5px 0;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-
-        .shop-item.owned {
-            border-color: #66fcf1;
-        }
-
-        .shop-btn {
-            padding: 4px 8px;
-            font-size: 0.75rem;
-            width: auto;
-            margin: 0;
-            background: transparent;
-            border: 2px solid #45f3ff;
-            color: #45f3ff;
-            cursor: pointer;
-        }
-
-        .shop-preview-canvas {
-            background: #02060c;
-            border: 1px solid #1f2833;
-            border-radius: 3px;
-            margin-right: 8px;
-        }
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #050505; color: #ecf0f1; font-family: 'Courier New', Courier, monospace; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+        #game-container { position: relative; width: 100%; max-width: 400px; height: 100vh; max-height: 700px; border: 4px solid #45f3ff; border-radius: 10px; box-shadow: 0 0 20px #45f3ff44; display: flex; flex-direction: column; overflow: hidden; }
+        #mobile-controls { position: absolute; bottom: 40px; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 30px; z-index: 100; }
+        #mobile-controls button { width: 75px; height: 75px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.4); background-color: rgba(0, 0, 0, 0.7); color: #00ffcc; font-size: 32px; font-weight: bold; cursor: pointer; }
+        canvas { width: 100%; flex-grow: 1; display: block; }
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 5, 0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; z-index: 10; }
+        h1 { font-size: 2.3rem; color: #45f3ff; text-shadow: 0 0 10px #45f3ff; margin-bottom: 5px; text-transform: uppercase; }
+        .subtitle { color: #66fcf1; font-size: 0.85rem; margin-bottom: 20px; }
+        .menu-btn { background: transparent; border: 2px solid #45f3ff; color: #45f3ff; padding: 10px 25px; font-size: 1.1rem; cursor: pointer; border-radius: 5px; margin: 6px 0; width: 85%; }
+        .stats-box { border: 1px solid #1f2833; background: #0f141c; padding: 12px; border-radius: 5px; margin-bottom: 12px; width: 85%; }
+        .leaderboard-title { font-size: 0.85rem; color: #ffe400; margin-top: 10px; }
+        .leaderboard-row { display: flex; justify-content: space-between; font-size: 0.8rem; color: #aaa; padding: 3px 10px; }
+        .hide { display: none !important; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <!-- MAIN MENU -->
     <div id="menu-screen" class="overlay">
         <h1>CyberJump</h1>
-        <div class="subtitle">// Evolution Matrix Engine Loaded //</div>
-        
+        <div class="subtitle">// MAYHEM ENGINE ACTIVE //</div>
         <div class="stats-box">
             <div>PEAK ALTITUDE: <span id="high-score-val">0</span></div>
-            <div style="margin-top: 5px;">CHIPS VALUE: <span id="chips-total-val" style="color: #ffe400;">0</span></div>
-            
-            <!-- ARCADE HIGH SCORE BOARD -->
-            <div class="leaderboard-title">=== TOP RUNS LOGGED ===</div>
-            <div id="leaderboard-board">
-                <!-- Scores injected via engine loop -->
-            </div>
+            <div id="leaderboard-board"></div>
         </div>
-
-        <button id="play-btn" class="menu-btn">LAUNCH SIMULATION</button>
-        <button id="shop-btn-menu" class="menu-btn">MATRIX WARDROBE</button>
+        <button id="play-btn" class="menu-btn">ENTER THE CHAOS</button>
     </div>
 
-    <!-- WARDROBE & BOOSTER MENU -->
-    <div id="shop-screen" class="overlay hide">
-        <h1>Wardrobe & Boosts</h1>
-        <div class="subtitle">Equip avatars or activate single-use pre-run matrix boosts</div>
-        
-        <div style="margin-bottom: 5px; font-weight: bold; font-size: 0.9rem;">
-            Chips Balance: <span id="shop-chips-val" style="color: #ffe400;">0</span>
-        </div>
-
-        <div class="shop-container">
-            <div class="shop-section-title">Pre-Run Supply Upgrades</div>
-            <div id="boosters-list">
-                <!-- Boosters injected here -->
-            </div>
-
-            <div class="shop-section-title">Prestige Avatars Configurations</div>
-            <div id="shop-items-list">
-                <!-- Skins injected here -->
-            </div>
-        </div>
-
-        <button id="close-shop-btn" class="menu-btn" style="border-color: #ff4545; color: #ff4545;">RETURN TO MENU</button>
-    </div>
-
-    <!-- REWIND TIME SCREEN -->
     <div id="save-screen" class="overlay hide">
-        <h1 style="color: #66fcf1; text-shadow: 0 0 10px #66fcf1;">CONNECTION STALL</h1>
-        <div class="subtitle">Temporal distortion detected. Rewind matrix?</div>
-        
-        <div class="stats-box">
-            <div>CURRENT ALTITUDE: <span id="save-score-val">0</span></div>
-            <div style="margin-top: 5px;">REBOOT COST: <span id="reboot-cost-val" style="color: #ffe400; font-weight: bold;">FREE</span></div>
-            <div style="font-size: 0.8rem; margin-top: 4px; color: #888;">Wallet Balance: <span id="save-chips-val">0</span> Chips</div>
-        </div>
-
-        <button id="reboot-btn" class="menu-btn" style="border-color: #ffe400; color: #ffe400;">PATCH TIMELINE (REBOOT)</button>
-        <button id="abandon-btn" class="menu-btn" style="border-color: #ff4545; color: #ff4545; font-size: 0.9rem; padding: 6px;">ABANDON RUN</button>
+        <h1 style="color: #ff3333;">MISSILE IMPACT</h1>
+        <button id="reboot-btn" class="menu-btn" style="border-color: #ffe400;">PATCH TIMELINE</button>
     </div>
 
-    <!-- GAME OVER SCREEN -->
     <div id="gameover-screen" class="overlay hide">
-        <h1 style="color: #ff4545; text-shadow: 0 0 10px #ff4545;">DESYNCHRONIZED</h1>
-        <div class="subtitle">Timeline connection fractured in mid-air.</div>
-        
-        <div class="stats-box">
-            <div>FINAL ALTITUDE: <span id="final-score-val">0</span></div>
-            <div>TOTAL CHIPS SECURED: <span id="collected-chips-val" style="color: #ffe400;">0</span></div>
-        </div>
-
+        <h1>DESYNCHRONIZED</h1>
         <button id="retry-btn" class="menu-btn">RESPAWN SYSTEM</button>
     </div>
 
-    <!-- Canvas Game Port -->
     <canvas id="gameCanvas"></canvas>
-
-    <!-- Mobile Touch Controls -->
     <div id="mobile-controls" class="hide">
         <button id="btn-left">◀</button>
         <button id="btn-right">▶</button>
@@ -301,721 +54,74 @@
 <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+    canvas.width = 400; canvas.height = 600;
 
-    canvas.width = 400;
-    canvas.height = 600;
+    let gameActive = false, score = 0, totalChips = parseInt(localStorage.getItem('cyberjump_chips')) || 1000;
+    let player = { x: 200, y: 500, width: 26, height: 36, vx: 0, vy: 0, gravity: 0.46, hasShield: false };
+    let platforms = [], items = [], missiles = [];
+    let keys = { left: false, right: false };
 
-    // Game variables
-    let gameActive = false;
-    let score = 0;
-    let totalChips = parseInt(localStorage.getItem('cyberjump_chips')) || 0;
-    let highScore = parseInt(localStorage.getItem('cyberjump_highscore')) || 0;
-    let runRebootsCount = 0;
-
-    // Historical leaderboard setup
-    let scoreBoard = JSON.parse(localStorage.getItem('cyberjump_scoreboard')) || [0, 0, 0];
-
-    let activeBoosters = { shield: false, magnet: false, jetpack: false };
-
-    const atariMatrix = [
-        "...XX...", "..XXXX..", "..X..X..", ".XXXXXX.",
-        "XX.XX.XX", "..XXXX..", "..X..X..", ".XX..XX."
-    ];
-
-    let skins = [
-        { id: 'default', name: 'Neon Runner', color: '#45f3ff', price: 0, owned: true },
-        { id: 'green', name: 'Matrix Overdrive', color: '#39ff14', price: 150, owned: false },
-        { id: 'red', name: 'Laser Renegade', color: '#ff3333', price: 600, owned: false },
-        { id: 'gold', name: 'Golden Singularity', color: '#ffd700', price: 2500, owned: false }
-    ];
-
-    let shopBoosters = [
-        { id: 'shield', name: 'Shield Startup', desc: 'Spawn with blue deflector bubble active.', price: 20 },
-        { id: 'magnet', name: 'Magnet Startup', desc: '15 seconds of item magnet field on launch.', price: 15 },
-        { id: 'jetpack', name: 'Jetpack Ignition', desc: 'Instantly rocket past the first 3k points.', price: 40 }
-    ];
-
-    const savedSkins = JSON.parse(localStorage.getItem('cyberjump_skins'));
-    if (savedSkins) {
-        savedSkins.forEach(saved => {
-            const current = skins.find(s => s.id === saved.id);
-            if (current) saved.price = current.price; 
-        });
-        skins = savedSkins;
-    }
-    let selectedSkin = localStorage.getItem('cyberjump_activeskin') || 'default';
-
-    const player = {
-        x: canvas.width / 2 - 14,
-        y: canvas.height - 100,
-        width: 26, 
-        height: 36,
-        vx: 0,
-        vy: 0,
-        speed: 5.8,
-        jumpForce: -13.2, 
-        gravity: 0.46,
-        rotation: 0,
-        color: '#45f3ff',
-        hasShield: false,
-        magnetTimer: 0,
-        jetpackTimer: 0
-    };
-
-    let platforms = [];
-    let items = [];
-    let backgroundBuildings = []; 
-    let retroShapes = [];         
-    let cameraY = 0; 
-    let basePlatformY = canvas.height - 40;
-
-    const ERA_2_START = 8000;  
-    const ERA_3_START = 25000; 
-
-    let currentEra = 1; 
-    let previousEra = 1;
-    let eraLeapTimer = 0; 
-    let screenShake = 0; 
-    let shieldBreakAlertTimer = 0;
-    let milestoneBonusTimer = 0; // Tracks flash alerts for +100 chip rewards
-
-    const keys = { left: false, right: false };
-
-    function initRetroShapes() {
-        retroShapes = [];
-        const colors = ['#9d4edd', '#ffea00', '#00f6ff', '#4b0082'];
-        for (let i = 0; i < 25; i++) {
-            retroShapes.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                type: Math.random() < 0.4 ? 'triangle' : Math.random() < 0.7 ? 'squiggle' : 'circle',
-                size: Math.random() * 12 + 6,
-                color: colors[Math.floor(Math.random() * colors.length)],
-                speedFactor: Math.random() * 0.3 + 0.1,
-                angle: Math.random() * Math.PI
-            });
-        }
+    // --- MAYHEM SYSTEMS ---
+    function spawnMissile() {
+        if (!gameActive || score < 5000) return;
+        missiles.push({ x: 400, y: Math.random() * 500, speed: 8 + (score/10000), warned: false, warningTimer: 60 });
     }
 
-    function initBuildings() {
-        backgroundBuildings = [];
-        for (let i = 0; i < 8; i++) {
-            backgroundBuildings.push({
-                x: i * 60 + Math.random() * 20,
-                y: Math.random() * 300 + 300,
-                width: Math.random() * 30 + 40,
-                height: 400,
-                speedFactor: 0.15 
-            });
-        }
-    }
-
-    function updateStatsUI() {
-        document.getElementById('high-score-val').textContent = highScore;
-        document.getElementById('chips-total-val').textContent = totalChips;
-        document.getElementById('shop-chips-val').textContent = totalChips;
-
-        // Render Highscore rows cleanly
-        const boardContainer = document.getElementById('leaderboard-board');
-        boardContainer.innerHTML = '';
-        scoreBoard.forEach((val, index) => {
-            const row = document.createElement('div');
-            row.className = 'leaderboard-row';
-            row.innerHTML = `<span>RANK 0${index + 1}</span> <span style="color:#00ffcc;">${val} PT</span>`;
-            boardContainer.appendChild(row);
-        });
-    }
-
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
-        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
-    });
-    window.addEventListener('keyup', (e) => {
-        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
-        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
-    });
-
-    const btnLeft = document.getElementById('btn-left');
-    const btnRight = document.getElementById('btn-right');
-
-    btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); keys.left = true; });
-    btnLeft.addEventListener('touchend', (e) => { e.preventDefault(); keys.left = false; });
-    btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); keys.right = true; });
-    btnRight.addEventListener('touchend', (e) => { e.preventDefault(); keys.right = false; });
-
-    function generatePlatforms(startY, count) {
-        let y = startY;
-        for (let i = 0; i < count; i++) {
-            y -= Math.floor(Math.random() * 45) + 75; 
-            let width = Math.max(50, 100 - (score / 400)); 
-            let x = Math.random() * (canvas.width - width);
-            
-            let movementSpeed = 0;
-            if (score >= ERA_2_START) {
-                movementSpeed = (Math.random() - 0.5) * (1.8 + (score / 20000));
-            }
-
-            platforms.push({ x, y, width, height: 10, vx: movementSpeed });
-
-            let roll = Math.random();
-            if (score > 4000 && roll < 0.09) {
-                let laserWidth = width * 0.45;
-                let laserX = x + (Math.random() < 0.5 ? 0 : width - laserWidth);
-                items.push({ x: laserX, y: y - 5, width: laserWidth, height: 6, type: 'laser', collected: false });
-            } else if (roll >= 0.09 && roll < 0.13) {
-                items.push({ x: x + width/2 - 10, y: y - 25, width: 20, height: 20, type: 'shield', collected: false });
-            } else if (roll >= 0.13 && roll < 0.17) {
-                items.push({ x: x + width/2 - 10, y: y - 25, width: 20, height: 20, type: 'magnet', collected: false });
-            } else if (roll >= 0.17 && roll < 0.20) {
-                items.push({ x: x + width/2 - 12, y: y - 25, width: 24, height: 20, type: 'jetpack', collected: false });
-            } else if (roll >= 0.22 && roll < 0.45) {
-                items.push({ x: x + width / 2 - 6, y: y - 22, width: 12, height: 12, type: 'chip', collected: false });
-            }
-        }
-    }
-
-    function initGame() {
-        score = 0;
-        cameraY = 0;
-        platforms = [];
-        items = [];
-        currentEra = 1;
-        previousEra = 1;
-        eraLeapTimer = 0;
-        screenShake = 0;
-        shieldBreakAlertTimer = 0;
-        milestoneBonusTimer = 0;
-        player.rotation = 0;
-        runRebootsCount = 0;
-        
-        const activeSkinObj = skins.find(s => s.id === selectedSkin);
-        player.color = activeSkinObj ? activeSkinObj.color : '#45f3ff';
-
-        player.hasShield = activeBoosters.shield;
-        player.magnetTimer = activeBoosters.magnet ? 900 : 0; 
-        player.jetpackTimer = activeBoosters.jetpack ? 180 : 0; 
-
-        activeBoosters.shield = false;
-        activeBoosters.magnet = false;
-        activeBoosters.jetpack = false;
-
-        initBuildings();
-        initRetroShapes();
-
-        platforms.push({ x: 0, y: basePlatformY, width: canvas.width, height: 40, vx: 0 });
-        generatePlatforms(canvas.height - 80, 22);
-
-        player.x = canvas.width / 2 - 13;
-        player.y = canvas.height - 120;
-        player.vx = 0;
-        player.vy = 0;
-
-        gameActive = true;
-        document.getElementById('mobile-controls').classList.remove('hide');
-        updateStatsUI();
-        gameLoop();
-    }
+    setInterval(spawnMissile, 3000);
 
     function update() {
         if (!gameActive) return;
 
-        if (player.jetpackTimer > 0) {
-            player.vy = -16; 
-            player.vx = 0;
-            player.x += ((canvas.width / 2 - player.width / 2) - player.x) * 0.1;
-        } else {
-            if (keys.left) player.vx = -player.speed;
-            else if (keys.right) player.vx = player.speed;
-            else player.vx *= 0.76; 
-        }
-
-        player.x += player.vx;
-        player.vy += player.gravity;
-        player.y += player.vy;
-
-        if (player.x + player.width < 0) player.x = canvas.width;
-        if (player.x > canvas.width) player.x = -player.width;
-
-        if (currentEra === 1) {
-            player.rotation = 0; 
-        } 
-        else if (currentEra === 2) {
-            player.rotation = player.vx * 0.05; 
-        } 
-        else {
-            if (player.jetpackTimer > 0) player.rotation = 0; 
-            else player.rotation += 0.08 + (Math.abs(player.vy) * 0.01); 
-        }
-
-        if (player.y < canvas.height / 2) {
-            let diff = (canvas.height / 2) - player.y;
-            cameraY += diff;
-            player.y += diff;
-            
-            platforms.forEach(p => p.y += diff);
-            items.forEach(it => it.y += diff);
-
-            if (currentEra === 2) {
-                retroShapes.forEach(s => {
-                    s.y += diff * s.speedFactor;
-                    if (s.y > canvas.height + 20) {
-                        s.y = -20; s.x = Math.random() * canvas.width;
-                    }
-                });
-            }
-            if (currentEra === 3) {
-                backgroundBuildings.forEach(b => {
-                    b.y += diff * b.speedFactor;
-                    if (b.y > canvas.height + 100) {
-                        b.y = -150; b.x = Math.random() * (canvas.width - b.width);
-                    }
-                });
-            }
-            score += Math.floor(diff);
-        }
-
-        platforms.forEach(p => {
-            if (p.vx !== 0) {
-                p.x += p.vx;
-                if (p.x <= 0 || p.x + p.width >= canvas.width) p.vx *= -1; 
-            }
-        });
-
-        // Current Era evaluation loops
-        if (score < ERA_2_START) currentEra = 1;
-        else if (score >= ERA_2_START && score < ERA_3_START) currentEra = 2;
-        else currentEra = 3;
-
-        // --- DYNAMIC TIME RIFT +100 CHIP MILESTONE CASH INJECTION ---
-        if (currentEra !== previousEra) {
-            eraLeapTimer = 130; 
-            screenShake = 30; 
-            milestoneBonusTimer = 110; 
-            
-            totalChips += 100; // Award milestone payout
-            localStorage.setItem('cyberjump_chips', totalChips);
-            
-            previousEra = currentEra;
-            updateStatsUI();
-        }
-
-        if (screenShake > 0) screenShake *= 0.92;
-        if (eraLeapTimer > 0) eraLeapTimer--;
-        if (shieldBreakAlertTimer > 0) shieldBreakAlertTimer--;
-        if (milestoneBonusTimer > 0) milestoneBonusTimer--;
-        if (player.magnetTimer > 0) player.magnetTimer--;
-        if (player.jetpackTimer > 0) player.jetpackTimer--;
-
-        if (player.jetpackTimer <= 0) {
-            platforms.forEach(platform => {
-                if (
-                    player.vy > 0 && 
-                    player.x + player.width > platform.x &&
-                    player.x < platform.x + platform.width &&
-                    player.y + player.height >= platform.y &&
-                    player.y + player.height <= platform.y + 12
-                ) {
-                    player.y = platform.y - player.height;
-                    player.vy = player.jumpForce; 
-                }
-            });
-        }
-
-        items.forEach(item => {
-            if (!item.collected) {
-                if (player.magnetTimer > 0 && item.type === 'chip') {
-                    let dx = (player.x + player.width / 2) - (item.x + 6);
-                    let dy = (player.y + player.height / 2) - (item.y + 6);
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 160) {
-                        item.x += (dx / dist) * 7.5;
-                        item.y += (dy / dist) * 7.5;
-                    }
-                }
-
-                if (
-                    player.x < item.x + item.width &&
-                    player.x + player.width > item.x &&
-                    player.y < item.y + item.height &&
-                    player.y + player.height > item.y
-                ) {
-                    if (item.type === 'laser') {
-                        if (player.jetpackTimer <= 0) { 
-                            if (player.hasShield) {
-                                player.hasShield = false;
-                                item.collected = true;
-                                shieldBreakAlertTimer = 100;
-                            } else {
-                                triggerSaveScreen();
-                            }
-                        }
-                    } else {
-                        item.collected = true;
-                        if (item.type === 'shield') player.hasShield = true;
-                        else if (item.type === 'magnet') player.magnetTimer = 480; 
-                        else if (item.type === 'jetpack') player.jetpackTimer = 300; 
-                        else {
-                            totalChips += 2;
-                            localStorage.setItem('cyberjump_chips', totalChips);
-                            updateStatsUI();
-                        }
-                    }
-                }
-            }
-        });
-
-        platforms = platforms.filter(p => p.y < canvas.height + 50);
-        items = items.filter(it => it.y < canvas.height + 50 && !it.collected);
-
-        if (platforms.length < 15) {
-            let highestPlatformY = Math.min(...platforms.map(p => p.y));
-            generatePlatforms(highestPlatformY, 15);
-        }
-
-        if (player.y > canvas.height + 15) {
-            if (player.hasShield) {
-                player.hasShield = false;
-                player.y = canvas.height / 2;
-                player.vy = player.jumpForce * 1.4;
-                shieldBreakAlertTimer = 110;
+        // Physics/Input
+        if (keys.left) player.vx = -5.8; else if (keys.right) player.vx = 5.8; else player.vx *= 0.76;
+        player.x += player.vx; player.vy += player.gravity; player.y += player.vy;
+        
+        // Missile Logic
+        missiles.forEach(m => {
+            if (m.warningTimer > 0) {
+                m.warningTimer--;
             } else {
-                triggerSaveScreen();
+                m.x -= m.speed;
             }
-        }
-    }
+        });
+        missiles = missiles.filter(m => m.x > -50);
 
-    function drawStickman(renderCtx, x, y, width, height, era, rotationAngle, color) {
-        renderCtx.save();
-        renderCtx.translate(x + width / 2, y + height / 2);
-        renderCtx.rotate(rotationAngle);
-        renderCtx.strokeStyle = color;
-        renderCtx.fillStyle = color;
-        renderCtx.lineWidth = era === 3 ? 3.5 : 2;
-
-        if (era === 2) {
-            renderCtx.strokeStyle = '#9d4edd'; 
-            renderCtx.beginPath(); renderCtx.arc(0, -13, 5, 0, Math.PI * 2); renderCtx.stroke();
-            renderCtx.beginPath();
-            renderCtx.moveTo(0, -8); renderCtx.lineTo(0, 4); 
-            renderCtx.moveTo(-9, -4); renderCtx.lineTo(9, -4); 
-            renderCtx.moveTo(0, 4); renderCtx.lineTo(-7, 15); 
-            renderCtx.moveTo(0, 4); renderCtx.lineTo(7, 15); 
-            renderCtx.stroke();
-        } 
-        else if (era === 3) {
-            renderCtx.shadowColor = color; renderCtx.shadowBlur = 12;
-            renderCtx.beginPath(); renderCtx.arc(0, -14, 5, 0, Math.PI * 2); renderCtx.fill();
-            renderCtx.beginPath(); renderCtx.moveTo(0, -9); renderCtx.lineTo(0, 5);
-            let legSway = Math.sin(Date.now() * 0.015) * 6;
-            renderCtx.moveTo(0, -6); renderCtx.lineTo(-11, -2 + (player.vy * 0.3));
-            renderCtx.moveTo(0, -6); renderCtx.lineTo(11, -2 - (player.vy * 0.3));
-            renderCtx.moveTo(0, 5); renderCtx.lineTo(-7 + legSway, 16);
-            renderCtx.moveTo(0, 5); renderCtx.lineTo(7 - legSway, 16);
-            renderCtx.stroke();
-        }
-        renderCtx.restore();
-    }
-
-    function drawSpriteItem(ctx, it) {
-        ctx.save();
-        if (it.type === 'laser') {
-            ctx.strokeStyle = '#ff0033'; ctx.lineWidth = 3.5; ctx.shadowColor = '#ff0033'; ctx.shadowBlur = 10;
-            ctx.beginPath(); ctx.moveTo(it.x, it.y); ctx.lineTo(it.x + it.width, it.y); ctx.stroke();
-            ctx.fillStyle = '#ffffff'; ctx.fillRect(it.x - 2, it.y - 3, 5, 6); ctx.fillRect(it.x + it.width - 3, it.y - 3, 5, 6);
-        } 
-        else if (it.type === 'shield') {
-            ctx.strokeStyle = '#00f6ff'; ctx.lineWidth = 2.5; ctx.shadowColor = '#00f6ff'; ctx.shadowBlur = 8;
-            ctx.beginPath(); ctx.arc(it.x + 10, it.y + 10, 8, 0, Math.PI*2); ctx.stroke();
-            ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(it.x + 10, it.y + 10, 3, 0, Math.PI*2); ctx.fill();
-        } 
-        else if (it.type === 'magnet') {
-            ctx.translate(it.x + 10, it.y + 10); ctx.rotate(Math.PI); ctx.lineWidth = 4; ctx.strokeStyle = '#ff3333';
-            ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI, true); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(-6, 0); ctx.lineTo(-6, -6); ctx.moveTo(6, 0); ctx.lineTo(6, -6); ctx.stroke();
-            ctx.strokeStyle = '#ffffff'; ctx.beginPath(); ctx.moveTo(-6, -6); ctx.lineTo(-6, -9); ctx.moveTo(6, -6); ctx.lineTo(6, -9); ctx.stroke();
-        } 
-        else if (it.type === 'jetpack') {
-            ctx.fillStyle = '#ff5500'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5;
-            ctx.fillRect(it.x, it.y, 24, 20); ctx.strokeRect(it.x, it.y, 24, 20);
-            ctx.beginPath(); ctx.moveTo(it.x, it.y); ctx.lineTo(it.x + 24, it.y + 20); ctx.moveTo(it.x + 24, it.y); ctx.lineTo(it.x, it.y + 20); ctx.stroke();
-        } 
-        else if (it.type === 'chip') {
-            ctx.translate(it.x + 6, it.y + 6);
-            ctx.fillStyle = currentEra === 1 ? '#00ff55' : currentEra === 2 ? '#ffea00' : '#00ff66';
-            if (currentEra === 3) { ctx.shadowColor = '#00ff66'; ctx.shadowBlur = 6; }
-            ctx.beginPath(); ctx.moveTo(0, -6); ctx.lineTo(6, 0); ctx.lineTo(0, 6); ctx.lineTo(-6, 0); ctx.closePath(); ctx.fill();
-        }
-        ctx.restore();
+        // Collision logic here...
+        if (player.y > 600) triggerSaveScreen();
     }
 
     function draw() {
-        ctx.save();
-        if (screenShake > 0) ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (currentEra === 1) {
-            ctx.fillStyle = '#030703'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(0, 255, 60, 0.04)';
-            for (let i = 0; i < canvas.height; i += 4) ctx.fillRect(0, i, canvas.width, 1.5);
-        } 
-        else if (currentEra === 2) {
-            ctx.fillStyle = '#1c1b22'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            retroShapes.forEach(s => {
-                ctx.fillStyle = s.color; ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.save();
-                ctx.translate(s.x, s.y); ctx.rotate(s.angle);
-                if (s.type === 'triangle') {
-                    ctx.beginPath(); ctx.moveTo(0, -s.size/2); ctx.lineTo(s.size/2, s.size/2); ctx.lineTo(-s.size/2, s.size/2); ctx.closePath(); ctx.fill();
-                } else if (s.type === 'squiggle') {
-                    ctx.beginPath(); ctx.moveTo(-s.size/2, 0); ctx.quadraticCurveTo(0, -s.size, s.size/2, 0); ctx.stroke();
-                } else { ctx.fillRect(-s.size/4, -s.size/2, s.size/2, s.size); }
-                ctx.restore();
-            });
-        } 
-        else {
-            let skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            skyGrad.addColorStop(0, '#020f08'); skyGrad.addColorStop(1, '#052211');
-            ctx.fillStyle = skyGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            backgroundBuildings.forEach(b => {
-                ctx.fillStyle = '#010a05'; ctx.strokeStyle = '#00ff66'; ctx.lineWidth = 1.5;
-                ctx.shadowColor = '#00ff66'; ctx.shadowBlur = 4;
-                ctx.fillRect(b.x, b.y, b.width, b.height); ctx.strokeRect(b.x, b.y, b.width, b.height);
-            });
-            ctx.shadowBlur = 0;
-        }
-
-        if (eraLeapTimer > 105) { ctx.fillStyle = 'rgba(255, 255, 255, 0.85)'; ctx.fillRect(0, 0, canvas.width, canvas.height); }
-
-        platforms.forEach(p => {
-            if (currentEra === 1) { ctx.fillStyle = '#00ff55'; ctx.fillRect(p.x, p.y, p.width, p.height); } 
-            else if (currentEra === 2) {
-                ctx.fillStyle = '#7b2cbf'; ctx.strokeStyle = '#00f6ff'; ctx.lineWidth = 2.5;
-                ctx.fillRect(p.x, p.y, p.width, p.height); ctx.strokeRect(p.x, p.y, p.width, p.height);
+        ctx.clearRect(0, 0, 400, 600);
+        
+        // Render Missiles
+        missiles.forEach(m => {
+            if (m.warningTimer > 0) {
+                ctx.fillStyle = 'red';
+                ctx.font = '20px Arial';
+                ctx.fillText("! WARNING !", 300, m.y);
             } else {
-                ctx.fillStyle = '#010502'; ctx.strokeStyle = '#39ff14'; ctx.lineWidth = 2.5;
-                ctx.shadowColor = '#39ff14'; ctx.shadowBlur = 8;
-                ctx.fillRect(p.x, p.y, p.width, p.height); ctx.strokeRect(p.x, p.y, p.width, p.height);
-                ctx.shadowBlur = 0;
+                ctx.fillStyle = 'orange';
+                ctx.fillRect(m.x, m.y, 40, 10);
             }
         });
 
-        items.forEach(it => { if (!it.collected) drawSpriteItem(ctx, it); });
-
-        if (player.jetpackTimer > 0) {
-            ctx.fillStyle = Math.random() < 0.5 ? '#ffea00' : '#ff3300';
-            ctx.fillRect(player.x + 4, player.y + player.height, 6, Math.random() * 20 + 10);
-            ctx.fillRect(player.x + player.width - 10, player.y + player.height, 6, Math.random() * 20 + 10);
-        }
-
-        if (currentEra === 1) {
-            const rows = atariMatrix.length; const cols = atariMatrix[0].length;
-            const pW = player.width / cols; const pH = player.height / rows; ctx.fillStyle = player.color;
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) { if (atariMatrix[r][c] === 'X') ctx.fillRect(player.x + (c * pW), player.y + (r * pH), pW - 0.5, pH - 0.5); }
-            }
-        } else { drawStickman(ctx, player.x, player.y, player.width, player.height, currentEra, player.rotation, player.color); }
-
-        if (player.hasShield) {
-            ctx.strokeStyle = '#00f6ff'; ctx.lineWidth = 3; ctx.shadowColor = '#00f6ff'; ctx.shadowBlur = 10;
-            ctx.beginPath(); ctx.arc(player.x + player.width/2, player.y + player.height/2, 26, 0, Math.PI*2); ctx.stroke();
-            ctx.shadowBlur = 0;
-        }
-        if (player.magnetTimer > 0) {
-            ctx.strokeStyle = '#ffea00'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]); ctx.beginPath();
-            ctx.arc(player.x + player.width/2, player.y + player.height/2, 34, 0, Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
-        }
-
-        // --- RENDER TEXT NOTIFICATIONS ---
-        ctx.textAlign = 'center';
-        if (eraLeapTimer > 0) {
-            ctx.fillStyle = '#ff0055'; ctx.font = 'bold 22px "Courier New"'; ctx.fillText("⚠️ TIMELINE RIFT DETECTED ⚠️", canvas.width / 2, canvas.height / 2.5);
-            ctx.fillStyle = '#66fcf1'; ctx.font = '13px "Courier New"';
-            let msg = currentEra === 2 ? "LOADING ERA_2: 90S RADICAL RETRO" : "LOADING ERA_3: MATRIX VECTOR CORES";
-            ctx.fillText(msg, canvas.width / 2, (canvas.height / 2.5) + 26);
-        }
-        if (shieldBreakAlertTimer > 0) { ctx.fillStyle = '#ff3333'; ctx.font = 'bold 18px "Courier New"'; ctx.fillText("💥 SHIELD ABSORPTION! 💥", canvas.width / 2, canvas.height / 1.7); }
-        
-        // Milestone Bonus Banner
-        if (milestoneBonusTimer > 0) {
-            ctx.fillStyle = '#ffe400'; ctx.font = 'bold 20px "Courier New"';
-            ctx.fillText("🏆 ERA SECURED! +100 CHIPS", canvas.width / 2, canvas.height / 3.4);
-        }
-
-        ctx.fillStyle = '#ecf0f1'; ctx.font = 'bold 15px "Courier New"'; ctx.textAlign = 'left';
-        ctx.fillText(`ALTITUDE: ${score}`, 15, 30);
-        ctx.fillStyle = '#ffe400'; ctx.fillText(`CHIPS: ${totalChips}`, 15, 52);
-        ctx.textAlign = 'right';
-        let elab = currentEra === 1 ? "1980 // ATARI" : currentEra === 2 ? "1995 // RADICAL" : "2026 // MATRIX";
-        ctx.fillStyle = currentEra === 1 ? '#00ff55' : currentEra === 2 ? '#9d4edd' : '#00ff66';
-        ctx.fillText(elab, canvas.width - 15, 30);
-        ctx.restore();
+        requestAnimationFrame(update);
+        requestAnimationFrame(draw);
     }
 
-    function gameLoop() {
-        if (!gameActive) return;
-        update();
-        draw();
-        requestAnimationFrame(gameLoop);
-    }
-
-    function getRebootCost() {
-        if (runRebootsCount === 0) return 0;   
-        if (runRebootsCount === 1) return 15;  
-        if (runRebootsCount === 2) return 50;  
-        return 100;                            
-    }
-
-    function triggerSaveScreen() {
-        gameActive = false;
-        document.getElementById('mobile-controls').classList.add('hide');
-        const cost = getRebootCost();
-        document.getElementById('save-score-val').textContent = score;
-        document.getElementById('save-chips-val').textContent = totalChips;
-        document.getElementById('reboot-cost-val').textContent = cost === 0 ? "FREE" : `${cost} CHIPS`;
-        document.getElementById('save-screen').classList.remove('hide');
-    }
-
-    document.getElementById('reboot-btn').addEventListener('click', () => {
-        const cost = getRebootCost();
-        if (totalChips >= cost) {
-            totalChips -= cost; 
-            runRebootsCount++;
-            localStorage.setItem('cyberjump_chips', totalChips);
-            
-            document.getElementById('save-screen').classList.add('hide');
-            document.getElementById('mobile-controls').classList.remove('hide');
-            
-            player.jetpackTimer = 0;
-            player.vx = 0;
-            
-            let safeY = canvas.height / 2 + 100;
-            let safetyPlatform = { x: canvas.width / 2 - 60, y: safeY, width: 120, vx: 0 };
-            
-            platforms.unshift(safetyPlatform);
-            items = items.filter(it => Math.abs(it.y - safeY) > 40);
-
-            player.x = canvas.width / 2 - player.width / 2;
-            player.y = safeY - player.height - 80; 
-            player.vy = player.jumpForce * 1.15;   
-            
-            setTimeout(() => {
-                gameActive = true;
-                updateStatsUI();
-                gameLoop();
-            }, 10); 
-        } else {
-            alert("Digital assets depleted!");
-        }
-    });
-
-    document.getElementById('abandon-btn').addEventListener('click', () => {
-        document.getElementById('save-screen').classList.add('hide'); endGame();
-    });
-
-    function endGame() {
-        gameActive = false; 
-        document.getElementById('mobile-controls').classList.add('hide');
-        
-        if (score > highScore) {
-            highScore = score; 
-            localStorage.setItem('cyberjump_highscore', highScore);
-        }
-
-        // --- SORT ARCHITECTURE FOR ARCADE LEADERBOARD ---
-        scoreBoard.push(score);
-        scoreBoard.sort((a, b) => b - a); // Highest score sorted first
-        scoreBoard = scoreBoard.slice(0, 3); // Retain top 3 lines only
-        localStorage.setItem('cyberjump_scoreboard', JSON.stringify(scoreBoard));
-
-        document.getElementById('final-score-val').textContent = score;
-        document.getElementById('collected-chips-val').textContent = totalChips;
-        document.getElementById('gameover-screen').classList.remove('hide');
-    }
-
-    function populateShop() {
-        const bContainer = document.getElementById('boosters-list');
-        bContainer.innerHTML = '';
-        shopBoosters.forEach(boost => {
-            const row = document.createElement('div');
-            row.className = 'shop-item';
-            let statusText = activeBoosters[boost.id] ? 
-                `<span style="color:#39ff14; font-weight:bold;">ARMED</span>` : 
-                `<button class="shop-btn" onclick="buyBooster('${boost.id}', ${boost.price})">ARM (${boost.price} C)</button>`;
-            
-            row.innerHTML = `
-                <div style="text-align:left;">
-                    <div style="font-weight:bold; color:#00f6ff;">${boost.name}</div>
-                    <div style="font-size:0.7rem; color:#aaa; margin-top:2px;">${boost.desc}</div>
-                </div>
-                <div>${statusText}</div>
-            `;
-            bContainer.appendChild(row);
-        });
-
-        const listContainer = document.getElementById('shop-items-list');
-        listContainer.innerHTML = '';
-        skins.forEach((skin) => {
-            const row = document.createElement('div');
-            row.className = `shop-item ${skin.owned ? 'owned' : ''}`;
-            let actionBtnHtml = skin.owned ? 
-                (skin.id === selectedSkin ? `<span style="color: #66fcf1; font-weight: bold;">EQUIPPED</span>` : `<button class="shop-btn" onclick="selectSkin('${skin.id}')">EQUIP</button>`) :
-                `<button class="shop-btn" onclick="buySkin('${skin.id}')">BUY (${skin.price} C)</button>`;
-
-            row.innerHTML = `
-                <div style="display: flex; align-items: center;">
-                    <canvas id="preview-${skin.id}" class="shop-preview-canvas" width="20" height="20"></canvas>
-                    <span>${skin.name}</span>
-                </div>
-                <div>${actionBtnHtml}</div>
-            `;
-            listContainer.appendChild(row);
-            const pCanvas = document.getElementById(`preview-${skin.id}`);
-            const pCtx = pCanvas.getContext('2d');
-            drawStickman(pCtx, -4, -8, 20, 24, 3, 0, skin.color);
-        });
-    }
-
-    window.buyBooster = function(id, price) {
-        if (totalChips >= price) {
-            totalChips -= price;
-            activeBoosters[id] = true;
-            localStorage.setItem('cyberjump_chips', totalChips);
-            updateStatsUI(); populateShop();
-        } else { alert("Insufficient Chips for supply booster!"); }
-    }
-
-    window.buySkin = function(id) {
-        const skin = skins.find(s => s.id === id);
-        if (skin && totalChips >= skin.price) {
-            totalChips -= skin.price; skin.owned = true;
-            localStorage.setItem('cyberjump_chips', totalChips);
-            localStorage.setItem('cyberjump_skins', JSON.stringify(skins));
-            selectSkin(id);
-        } else { alert(`The mainframe requires ${skin.price} Chips for this rare config.`); }
-    }
-
-    window.selectSkin = function(id) {
-        selectedSkin = id; localStorage.setItem('cyberjump_activeskin', selectedSkin);
-        const activeSkinObj = skins.find(s => s.id === selectedSkin);
-        player.color = activeSkinObj ? activeSkinObj.color : '#45f3ff';
-        updateStatsUI(); populateShop();
-    }
+    // Input handlers
+    document.getElementById('btn-left').addEventListener('touchstart', () => keys.left = true);
+    document.getElementById('btn-left').addEventListener('touchend', () => keys.left = false);
+    document.getElementById('btn-right').addEventListener('touchstart', () => keys.right = true);
+    document.getElementById('btn-right').addEventListener('touchend', () => keys.right = false);
 
     document.getElementById('play-btn').addEventListener('click', () => {
-        document.getElementById('menu-screen').classList.add('hide'); initGame();
-    });
-    document.getElementById('retry-btn').addEventListener('click', () => {
-        document.getElementById('gameover-screen').classList.add('hide'); initGame();
-    });
-    document.getElementById('shop-btn-menu').addEventListener('click', () => {
-        document.getElementById('menu-screen').classList.add('hide'); document.getElementById('shop-screen').classList.remove('hide');
-        populateShop();
-    });
-    document.getElementById('close-shop-btn').addEventListener('click', () => {
-        document.getElementById('shop-screen').classList.add('hide'); document.getElementById('menu-screen').classList.remove('hide');
-        updateStatsUI();
+        document.getElementById('menu-screen').classList.add('hide');
+        gameActive = true;
+        update(); draw();
     });
 
-    updateStatsUI();
+    function triggerSaveScreen() { gameActive = false; document.getElementById('save-screen').classList.remove('hide'); }
 </script>
 </body>
-    </html>
+</html>
