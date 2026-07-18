@@ -3,79 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CyberJump: MAYHEM MASTER</title>
+    <title>CyberJump: ORIGINAL</title>
     <style>
-        body { margin: 0; background: #050505; color: #fff; font-family: 'Courier New', Courier, monospace; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; touch-action: none; }
-        #game-container { position: relative; width: 100%; max-width: 400px; height: 100vh; max-height: 700px; border: 4px solid #45f3ff; overflow: hidden; }
+        body { margin: 0; background: #050505; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        #game-container { position: relative; width: 400px; height: 600px; border: 4px solid #45f3ff; }
         canvas { width: 100%; height: 100%; display: block; background: #000; }
         #ui { position: absolute; top: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.8); }
-        button { background: #000; color: #45f3ff; border: 2px solid #45f3ff; padding: 20px; font-size: 1.5rem; cursor: pointer; margin: 10px; }
-        #controls { position: absolute; bottom: 20px; width: 100%; display: flex; justify-content: space-around; }
-        .ctrl { width: 70px; height: 70px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 2px solid white; color: white; }
+        button { background: #000; color: #45f3ff; border: 2px solid #45f3ff; padding: 20px; font-size: 1.5rem; cursor: pointer; }
     </style>
 </head>
 <body>
     <div id="game-container">
         <div id="ui">
             <h1>CYBERJUMP</h1>
-            <button id="start">ENTER MAYHEM</button>
+            <button id="start">START GAME</button>
         </div>
         <canvas id="c" width="400" height="600"></canvas>
-        <div id="controls">
-            <button id="left" class="ctrl">◀</button>
-            <button id="right" class="ctrl">▶</button>
-        </div>
     </div>
 
     <script>
         const canvas = document.getElementById('c'), ctx = canvas.getContext('2d');
-        let gameActive = false, score = 0, p = {x: 187, y: 500, vx: 0, vy: 0}, missiles = [], zapNodes = [], keys = {l: false, r: false};
-
-        // Input
-        document.getElementById('left').addEventListener('touchstart', () => keys.l = true);
-        document.getElementById('left').addEventListener('touchend', () => keys.l = false);
-        document.getElementById('right').addEventListener('touchstart', () => keys.r = true);
-        document.getElementById('right').addEventListener('touchend', () => keys.r = false);
-
-        // Mayhem Generators
-        setInterval(() => { if(gameActive) missiles.push({x: 400, y: Math.random()*500, warn: 60}); }, 2500);
-        setInterval(() => { if(gameActive) zapNodes.push({x: Math.random()*300, y: -50, angle: 0}); }, 4000);
+        let gameActive = false, score = 0;
+        let p = { x: 187, y: 500, vx: 0, vy: 0, w: 26, h: 36 };
+        let platforms = [{x: 100, y: 550, w: 200, h: 10}];
+        
+        // Basic Input
+        window.addEventListener('keydown', e => { if(e.key==='ArrowLeft') p.vx = -5; if(e.key==='ArrowRight') p.vx = 5; });
+        window.addEventListener('keyup', () => p.vx = 0);
 
         function loop() {
             if(!gameActive) return;
             ctx.clearRect(0, 0, 400, 600);
             
             // Physics
-            p.vx = keys.l ? -6 : keys.r ? 6 : 0;
-            p.x = (p.x + p.vx + 400) % 400;
-            p.vy += 0.5; p.y += p.vy;
-            if(p.y > 550) p.vy = -14;
+            p.x += p.vx;
+            p.vy += 0.5;
+            p.y += p.vy;
 
-            // Missiles
-            missiles.forEach((m, i) => {
-                if(m.warn > 0) { m.warn--; ctx.fillStyle='red'; ctx.fillText("! WARNING !", 300, m.y); }
-                else { m.x -= 8; ctx.fillStyle='orange'; ctx.fillRect(m.x, m.y, 40, 10); }
-                if(m.x < -50) missiles.splice(i, 1);
+            // Collision
+            platforms.forEach(pl => {
+                if (p.vy > 0 && p.y + p.h > pl.y && p.y + p.h < pl.y + 20 && p.x + p.w > pl.x && p.x < pl.x + pl.w) {
+                    p.vy = -12;
+                }
             });
 
-            // ZapNodes
-            zapNodes.forEach(z => {
-                z.y += 2; z.angle += 0.1;
-                ctx.save(); ctx.translate(z.x, z.y); ctx.rotate(z.angle);
-                ctx.strokeStyle = 'yellow'; ctx.beginPath(); ctx.moveTo(-20,0); ctx.lineTo(20,0); ctx.stroke();
-                ctx.restore();
-            });
+            // Wrap & Bounds
+            if (p.x > 400) p.x = -p.w; else if (p.x < -p.w) p.x = 400;
+            if (p.y > 600) { gameActive = false; document.getElementById('ui').style.display = 'flex'; }
 
-            // Draw Player
-            ctx.fillStyle = 'cyan'; ctx.fillRect(p.x, p.y, 26, 36);
-            score++;
-            ctx.fillText("SCORE: " + score, 10, 20);
+            // Draw
+            ctx.fillStyle = 'cyan'; ctx.fillRect(p.x, p.y, p.w, p.h);
+            ctx.fillStyle = '#00ff55';
+            platforms.forEach(pl => ctx.fillRect(pl.x, pl.y, pl.w, pl.h));
+            
             requestAnimationFrame(loop);
         }
 
         document.getElementById('start').onclick = () => {
             document.getElementById('ui').style.display = 'none';
-            gameActive = true; loop();
+            gameActive = true; 
+            loop();
         };
     </script>
 </body>
